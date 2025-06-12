@@ -1,0 +1,1335 @@
+<!-- FEATURE DIAGNOSTICITY EXPERIMENT -->
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Experiment</title>
+        <!-- Load in the jspsych tools, plugins,and layout -->
+        <script src= "scripts/jspsych.js"></script> 
+        <script src= "scripts/jspsych-html-keyboard-response.js"></script>
+        <script src= "scripts/jspsych-html-keyboard-response-colorCircle.js"></script>
+        <script src= "scripts/jspsych-html-keyboard-responseMAS.js"></script>
+        <script src= "scripts/jspsych-html-keyboard-responseMAS-sortingInstr.js"></script>
+        <script src= "scripts/jspsych-html-keyboard-responseMAS-sortingInstr-18.js"></script>
+
+        <script src= "scripts/jspsych-html-keyboard-responseMAS-sorting.js"></script>
+        <script src= "scripts/jspsych-html-keyboard-responseMAS-sorting_corners.js"></script>
+        <script src= "scripts/jspsych-html-keyboard-responseMAS-sorting_borders18.js"></script>
+
+        <script src= "scripts/jspsych-html-keyboard-response-coloredSquare.js"></script>
+        <script src= "scripts/jspsych-html-keyboard-response-instrMAS-randomColorGrid.js"></script>
+
+        <script src= "scripts/jspsych-html-button-response.js"></script>
+        <script src= "scripts/jspsych-image-keyboard-responseMAS.js"></script>
+        <script src= "scripts/jspsych-image-keyboard-responseMAS-garner.js"></script>
+        <script src= "scripts/jspsych-image-keyboard-responseMAS-garnerInstr.js"></script>
+        <script src= "scripts/jspsych-image-keyboard-responseMAS-flowerCat.js"></script>
+        <script src= "scripts/jspsych-image-keyboard-responseMAS-flowerCat_motion.js"></script>
+
+        <script src = "scripts/jspsych-image-slider-responseMAS.js"></script>
+        <script src = "scripts/jspsych-image-slider-response_InstrMAS.js"></script>
+        <script src = "scripts/jspsych-image-slider-responseMAS-randomInst-colorSquare.js"></script>
+        <script src = "scripts/jspsych-image-slider-responseMAS-randomInst-colorSquare-2.js"></script>
+        <script src = "scripts/jspsych-image-slider-responseMAS-colorSquare-assoc.js"></script>
+        <script src = "scripts/jspsych-image-slider-responseMAS-colorSquare.js"></script>
+
+        <script src = "scripts/jspsych-image-button-responseMAS-colorArray.js"></script>
+        <script src= "scripts/jspsych-image-text-responseMAS.js"></script>
+        <script src = "scripts/jspsych-fullscreen.js"></script>
+        <script src = "scripts/jspsych-image-keyboard-response-instrMAS-randomColorGrid.js"></script>
+        <script src = "scripts/jspsych-image-slider-responseMAS-randomInst.js"></script>
+        <script src = "scripts/jspsych-survey-text.js"></script>
+        <script src = "scripts/jspsych-survey-multi-select.js"></script>   
+        <script src = "scripts/jspsych-survey-multi-choice-colorCircle.js"></script>   
+        <script src = "scripts/jspsych-survey-multi-selectMAS.js"></script>   
+        <script src = "scripts/jspsych-survey-multi-choice.js"></script>
+        <script src = "scripts/jspsych-call-function.js"></script>
+        <script src = "serverComm.js" type="text/javascript"></script>
+        <link href= "scripts/jspsychMAS-BoothB.css" rel="stylesheet" type="text/css"id = "BoothB" class = "alternate"></link>
+        <link href= "scripts/jspsychMAS-BoothA.css" rel="stylesheet" type="text/css" id = "BoothA" class = "alternate"></link>
+        <link href= "scripts/jspsychMAS.css" rel="stylesheet" type="text/css" id = "Main"></link>
+        <script src = "colorCalibration_srgb_featureDiag.js"></script>
+        <script src = "colorCalibration_featureDiag.js"></script>
+        <script src = "ishiharaPlates.js"></script>
+
+        <style>
+        </style>
+    </head>
+    <body>          
+    </body> 
+
+
+<!--------------------- Here is where the experiment is created ------------------------------------------->
+<script>
+
+// ---------- UPDATE THESE ------------------//
+
+    //General experiment info to update
+    var expServer= 0; //0 = not server version; 1 = server version (checks ID register, condition, data saving)
+        console.log("expServer: ", expServer)
+        console.log("Updated: 4/6 ")
+    var expType = 1 // 0 = SONA; in-lab version; 1 = sona ONLINE ; 2 = mTurk online version (relevant for consent & debriefing)
+        console.log("consent:", expType)
+   
+
+    var expTime = 30; // How long experiment will take in minutes
+    var experimenterName = "mschoenl@highpoint.edu"  //Update to your contact info. this is presented if an error arises for a participantd
+    var numConditions = 1; //Number of conditions. If more than 1 and on server, will counterbalance. 
+    var numTasks = 3;  //Number of experimental tasks (not counting demographics/consent)
+
+
+    //For mTurk studies
+    var MturkComplete_code = "jr2z7aXwvSTz5";  //Code copied from mTurk Cloud Research Fixed completion code
+
+    //Debriefing script- presents at very end of experiment. Describes the purpose of the experiment. Statements automatically included about receiving sona credit or entering a code for mTurk HITT. 
+    // NOTE: if you have more than one between subjects condition, you MUST describe what the different conditions did/saw. 
+    var debriefScript = "<p>Great job! You have finished the experiment.</p>" +
+                "<p>The goal of this experiment is to investigate what factors influence people's associations between colors and concepts by teaching novel color categories. In this experiment, in task set 1, you learned to categorize colors into 4 new color categories."+
+                  "<br>Some participants learned to merge purples and blues together, such that they categorized light purples and light blues together, dark purples and dark blues together, light and dark pinks together, and light and dark oranges together."+
+                  "<p>Other participants learned to merge pinks and oranges together, such that they categorized light pinks and light oranges together, dark pinks and dark oranges together, light and dark purples together, and light and dark blues together."+
+                "<p> Then, in the last task set, you completed a category learning task,during which you categorized colored aliens into two different species, followed by an association taks, in which you indicated whether you associated colors with each alien species." +
+             "<p>We are interested if the novel color categories you learned in Task Set 1 influenced the colors you learned to associate with the alien species in Task Set 2."
+   
+      
+
+    // Set background color  
+    document.body.style.backgroundColor = "rgb(122, 121, 120)" //(Gray) <-- INCLUDE THIS BELOW WITH CALIBRATION
+
+
+
+
+/*----------------------------------START OF EXPERIMENT TIMELINE: DO NOT CHANGE ------------------------------------ */
+
+    // Create timeline variable //
+    var timeline1 = []; //timeline for initial screen & fullscreen loading (before registering ID)
+    var timeline = []; //timeline for experiment (once ID is registered)
+
+
+// Pop-up box if people try to leave the page (including refreshing) 
+    window.onbeforeunload = function() {
+        return "If you leave or refresh the page, you will not be able to finish the experiment.";
+    };
+
+    
+ 
+    //present booth trial questions for in-person experiments 
+if (expType == 1){ //MELISSA
+    
+    //Booth trial
+    var booth_trial = {
+                    type: 'html-keyboard-response',
+                    stimulus: '<p>Experimenter:'+
+                        '<p>First, please add: "?id=" followed by the subjectID number to the end of the experiment URL & re-load by pressing "enter".'+
+                        "<p>Second, which Booth is this: type the Number and then continue.",
+                    choices: [48,49,50,51,52,53,54,55],
+                }
+     timeline1.push(booth_trial) 
+
+    // Initial welcome screen
+    var initial_screen = {
+                    type: 'html-button-response',
+                    stimulus: '<p>Experimenter:'+
+                        '<p> please double check that the subjectID is at the end of the experiment URL.'+
+                    '<br>Then click begin'+
+                '<p> Once you click that button, it will not be possible to restart the experiment.',
+                    choices: ['Begin Experiment']
+    }
+    timeline1.push(initial_screen);
+
+
+}
+// else if (expType > 0){
+
+//     // Initial welcome screen
+//     var initial_screen = {
+//                 type: 'html-button-response',
+//                 stimulus: '<p>Welcome to our experiment!</p>' +
+//                     '<br>Please make sure you are using a computer to complete this experiment (i.e. NOT a phone or tablet).'+
+//                     "<br>Please ensure your monitor's brightness and volume is turned all the way up."+
+//                     '<br>For best viewing, please sit approximately 1.5 feet to 2 feet from your computer screen.</p>'+
+//                     '<br>At the bottom of this screen, you will see a button that says "Begin Experiment".'+
+//                     '<br>Please only click that button when you are ready to complete the '+expTime+' minute experiment in one sitting.</p>'+
+//                     '<p> Once you click that button, it will not be possible to restart the experiment.',
+//                 choices: ['Begin Experiment'] 
+//             }
+//             timeline1.push(initial_screen);
+
+//}
+
+    var whichBooth = "";
+
+
+
+// Get & create subject ID
+    //Give each subject a random ID
+    var randomID = Math.floor((Math.random() * 10000) + 10000); // Create a random ID code for each participant
+    var subject_id = randomID // Create a random ID code for each participant
+    var urlvar = jsPsych.data.urlVariables();
+
+    //Give each subject a completion code to enter into mTurk
+    if (expType == 0){ // 0 = SONA version; 
+        complete_code = Math.floor((Math.random() * 10000) + 30000);
+        var workerID = urlvar.id // urlvar.id  
+
+    }else if (expType == 1){ //1 = SONA online
+        complete_code = Math.floor((Math.random() * 10000) + 30000);
+        var workerID = urlvar.id
+
+    }else if (expType == 2){ //2 = mTurk version 
+        complete_code = MturkComplete_code;
+        var workerID = urlvar.workerId
+    }
+
+    
+
+//Enter fullscreen mode- asks participants to press "continue" button to enter full screen
+    // Once participants enter fullscreen mode, their ID is recorded
+    timeline1.push({
+        type: 'fullscreen',
+        fullscreen_mode: true,//change to true to turn on & false to turn off 
+        on_finish: function (){registration()} // Function to register subject ID
+        })
+
+        
+
+/*----------------------------------REGISTER ID ------------------------------------ */
+
+// Check if worker/sonaID is already recorded
+  function registration(){
+
+// If not on server, move on
+if (expServer == 0){
+    register_success(); //calls the entire experiment to begin
+
+//If on server, check if ID has been registered
+}else if (expServer == 1){
+    serverComm.register_subject(workerID,
+        function(){ // If the subject has a unique id that has not yet been recorded, the experiment will load/begin.
+            register_success(); //calls the entire experiment to begin
+        },
+        function(){ // If ID has already been registered, give error message. 
+            document.querySelector('body').innerHTML = '<p>Our records indicate that you have already started this experiment. Due to the nature of the experiment, restarting is not permitted.</p><p>If you believe this message is in error, you can contact the researchers at '+experimenterName+'.</p><p>Our apologies for the trouble.</p>';
+        },
+        function(){ // If there is a technical error.
+            document.querySelector('body').innerHTML = '<p>Our apologies. There was a technical error on our end while loading the experiment.</p><p>You will not be able to complete the experiment. You can contact the researchers at '+experimenterName+' with any questions.</p><p> Our apologies for the trouble.</p>';
+        })
+    }
+}
+
+//REGISTER ID FUNCTION
+function register_success (){ // the entire experiment is embedded in this function
+
+
+/*----------------------------------CONDITION ASSIGNMENT ------------------------------------ */
+
+// Assignment to a condition //
+    var assigned_condition = null;
+    var n_conditions = numConditions;
+
+    // Not on server- randomly select condition
+    if (expServer == 0){
+        function getRandomIntInclusive(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return  Math.floor(Math.random() * (max - min + 1));
+        }
+        assigned_condition = getRandomIntInclusive(0,n_conditions-1);
+        condition_success()
+
+    //If on server, check condition of previous participant
+    }else if (expServer == 1){
+        serverComm.assign_condition(subject_id, n_conditions,
+        function(response){
+            assigned_condition = response.assignedCondition; //Using the table in the database to assign conditions
+            condition_success()
+        },
+        function(){
+             document.querySelector('body').innerHTML = '<p>Our apologies. There was a technical error on our end while loading the experiment.</p><p>You will not be able to complete the experiment. You can contact the researchers at schoenlein@wisc.edu with any questions.</p><p>Our apologies for the trouble.</p>';
+        });
+    }
+
+
+//CONDITION FUNCTION
+function condition_success(){ //the entire experiment is now embedded in this function
+
+// Set condition
+    var whichCondition = assigned_condition; 
+    console.log("whichCondition: ", whichCondition)
+
+
+
+/*----------------------------------WHICH BOOTH ------------------------------------ */
+
+// WHICH BOOTH IS BEING USED
+//if (expType == 0){//IN-PERSON
+
+// var whichBoothKey =  jsPsych.data.get().select('key_press').values[0]; 
+
+// if (whichBoothKey == 65){
+//      whichBooth = "BoothA" 
+//      console.log(whichBooth)
+//      booth_timeline()
+
+//     //select correct stylesheet
+//     link = document.getElementById("Main"); 
+//     link.setAttribute("href", "scripts/jspsychMAS-BoothA.css"); //Change its href attribute
+
+
+// }else if(whichBoothKey == 66){
+//     whichBooth = "BoothB";
+//     console.log(whichBooth)
+//     booth_timeline()
+
+//     //select correct stylesheet
+//     link = document.getElementById("Main"); 
+//     link.setAttribute("href", "scripts/jspsychMAS-BoothB.css"); //Change its href attribute
+//   //  document.querySelector('body').innerHTML = '<p>You indicated Booth B. Booth B is currently not to be used. Please switch to booth A.';
+
+// }
+
+
+//for online experiments
+//}else if (expType >0){
+
+var whichBoothKey =  79; 
+    whichBooth = "Online";
+    console.log(whichBooth)
+    booth_timeline()
+
+    //select correct stylesheet
+    link = document.getElementById("Main"); 
+    link.setAttribute("href", "scripts/jspsychMAS.css"); //Change its href attribute
+
+//}
+
+
+//BOOTH FUNCTION 
+function booth_timeline(){ //the entire experiment is now embedded in this function. 
+
+
+
+/*----------------------------------GETTING INFO------------------------------------ */
+
+// Get Start time
+    var start_time = new Date();
+
+
+//Record mturk/SONAID, condition, subjectID, and date info
+    jsPsych.data.addProperties({workerID: workerID, conditionProto: whichCondition, subjectID: subject_id, dateInfo: start_time});
+
+
+// "Fake trial" for checking if experiment loaded correctly
+    var loadCheck = {
+        type: 'html-keyboard-response',
+        stimulus: "",
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 10}
+    timeline.push(loadCheck);
+
+
+// Save the fake trial data to the server (this is done as a way to check that if there is not a full dataset for a registered ID, that the experiment loaded properly and the participant dropped out)
+    timeline.push({
+        type: 'call-function',
+        func: function(){saveData(jsPsych.data.get())}
+        });
+
+        
+    //load fake trial again so that consent presents. 
+    timeline.push(loadCheck);
+
+
+    
+//Give each subject a random ID
+if (expType == 1){//MELISSA
+        var subjIDenter = {
+            type: 'survey-text',
+            questions: [
+                {prompt: "subjectID", name: 'subjNumber', rows: "1", columns: "15", required: true,},
+                {prompt: "Experimenter", name: 'experimenter', rows: "1", columns: "15", required: true,},
+                {prompt: "Confirm Booth Number", name: 'booth', rows: "1", columns: "15", required: true,}
+                ],
+            preamble: "Experimenter: please complete.",
+            button_label: "Begin",
+            randomize_question_order: false,
+            autocomplete: false
+            }
+
+        timeline.push(subjIDenter);
+
+
+    }else if (expType > 0){
+            
+    // Consent form - SONA online
+    var consentSign = {
+            type: 'survey-multi-selectMAS',
+            questions: [
+                {prompt:
+                "  <strong>UNIVERSITY OF WISCONSIN-MADISON</strong>" +
+                "  <br><strong>Research Participant Information and Consent Form</strong>" +
+                " <br><br><strong>Title of the Study:</strong> Investigating how observers perceive, interpret, and evaluate visual features in 2D scenes and 3D environments" +
+                " <br><br><strong>Principal Investigator:</strong> Karen B. Schloss (phone: 608-316-4495) (email: kschloss@wisc.edu)" +
+                "  <br><br><strong><u>DESCRIPTION OF THE RESEARCH</u></strong>" +
+                "  <br>You are invited to participate in a research study about how visual features influence the ability to perceive, interpret, navigate, and remember information in visual displays." +
+                "  <br><br>You have been asked to participate because you saw a description of the study and signed up to be a participant." +
+                "  <br><br>The purpose of the research is to understand principles by which people perceive, evaluate and interpret visual information (e.g., the meaning of parts of a scientific diagram)." +
+                "  <br><br>This study will include adults from UW-Madison and nearby areas who volunteer to participate." +
+                "  <br><br>The research will be conducted online, with no requirement to appear in person." +
+                "  <br><br><strong><u>WHAT WILL MY PARTICIPATION INVOLVE?</u></strong>" +
+                "  <br>If you decide to participate in this research you will be presented with visual displays containing images and/or text and will be asked to make judgments about them. For example, you may see shapes and be asked how round they appear or view a graph with a legend and interpret information about the data in the graph. You will be asked to respond by making button presses on a keyboard/mouse. You may be asked to complete questionnaires about your expertise or educational level in a given domain (e.g., neuroscience) and questionnaires about what sorts of things you like/dislike. Finally, you may be asked to respond to questions about your experience during the experiment (e.g., how much you enjoyed the task)." +
+                "  <br><br>You will be asked to complete 2-6 surveys or tasks." +
+                "  <br><br>Your participation will last approximately 30 min - 60 min per session (as specified when you signed up to participate) and will require 1 session (30 to 60 min total)." +
+                "  <br><br><strong><u>ARE THERE ANY RISKS TO ME?</u></strong>" +
+                "  <br>We don't anticipate any risks to you from participation in this study." +
+                "  <br><br><strong><u>ARE THERE ANY BENEFITS TO ME?</u></strong>" +
+                "  <br>There are no direct benefits for participating in this study." +
+                "  <br><br><strong><u>WILL I BE COMPENSATED FOR MY PARTICIPATION?</u></strong>" +
+                "  <br>Consistent with PSY 202/210/225 policies, you will receive 1 extra credit point/30 minutes of study participation. At the end of the semester, those extra credit points are converted such that 1 point of extra credit = 0.33% added directly to your grade at the end of term."+
+                "  <br>Consult your class syllabus for additional details regarding the application of extra credit points to your final grade.   " +
+                "  <br><br><strong><u>HOW WILL MY CONFIDENTIALITY BE PROTECTED?</u></strong>" +
+                "  <br>While there will probably be publications as a result of this study, your name will not be used. Typically, group characteristics will be published, but datasets with individual responses may also be shared. In such cases, the data will not be linked to your name or other identifiable information." +
+                "  <br><br><strong><u>WHOM SHOULD I CONTACT IF I HAVE QUESTIONS?</u></strong>" +
+                "   <br>You may ask any questions about the research at any time. If you have questions about the research you can contact the Principal Investigator Karen B. Schloss at 608-316-4495." +
+                "   <br><br>If you are not satisfied with response of research team, have more questions, or want to talk with someone about your rights as a research participant, you should contact the Education and Social/Behavioral Science IRB Office at 608-263-2320." +
+                "  <br><br>Your participation is completely voluntary. If you decide not to participate or to withdraw from the study it will have no effct on your grade in this class." +
+                "  <br><br>By clicking the box below, you confirm that you have read this consent form, had an opportunity to ask any questions about your participation in this research and voluntarily consent to participate. You may print a copy of this form for your records." +
+                "  <br><br>Please click the box below next to the text 'I consent' to give your informed consent to participate. " +
+                "   </p>",
+                options: ["<strong>I consent</strong>"],
+                horizontal: false,
+                required: true,
+                name: 'Consent'},
+                ],
+            button_label: "Start Experiment",
+            };
+
+  //  timeline.push(consentSign);
+
+    }
+
+
+
+/*----------------------------------COLOR CALIBRATION ------------------------------------ */
+
+//Call color calibration function 
+if (expType == 0){ //in-person (use booth A/B calibrations)
+    var calibrationColors = colorCalibration()
+
+}else if (expType >0){ //online (use srgb colors)
+    var calibrationColors = colorCalibration_srgb()
+}
+
+//Return RGB coordinates calibrated for the given monitor
+var promptedColorR1 = calibrationColors["Red"] 
+var promptedColorG1 = calibrationColors["Green"]
+var promptedColorB1 = calibrationColors["Blue"]
+
+console.log("backgroundrgb:", rBackground, gBackground, bBackground)
+
+
+
+/*----------------------------------LOAD COMMON FUNCTIONS ------------------------------------ */
+
+
+//shuffle function
+function shuffle(array) {
+    let currentIndex = array.length,  randomIndex;
+
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+
+        // Pick a remaining element.
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+    return array;
+}
+
+
+// randomly select function
+function getRandomIntInclusive(min, max) {
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+
+
+
+//function to index value
+function getIndexOfK(arr, k) {
+        for (var i = 0; i < arr.length; i++) {
+            for (var j = 0; j < arr[i].length; j++) {
+                var index = arr[i][j].indexOf(k);
+                if (index > -1) {
+                return [i, j, index];
+                }
+            }
+        }
+    }   
+
+
+// Inter trial interval //
+var fixation = {
+        type: 'html-keyboard-response',
+        stimulus: '<div style= "font-size:40px;">+</div>',
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 500}   
+
+
+
+
+//-------------------- BEGINNING OF DEMOGRAPHIC INFO ----------------------------------------// 
+
+
+// Overview instructions of experiment 
+    var overview_instructions = {
+        type: 'html-button-response',
+        stimulus: 'Welcome! <p> This experiment involves several parts: demographic information, followed by '+numTasks+' tasks.' + 
+            '<p> It will take about '+expTime+' minutes to complete all parts.',
+        choices: ['Begin']
+    }
+    timeline.push(overview_instructions);
+
+    
+
+// Demographic questions
+    // Age, gender, race/ethnicity, and language  
+    var age_lang_demo = {
+        type: 'survey-text',
+        questions: [
+            {prompt: "Age", name: 'Age', rows: "1", columns: "3", required: true,},
+            {prompt: "Gender", name: 'Gender', rows: "1", columns: "15", required: true,},
+            {prompt: "Race/ethnicity", name: 'Race/ethnicity', rows: "1", columns: "30", required: true,},
+            {prompt: "List all languages you know", name: "Languages", rows: "1", columns: "40", required: true,}
+            ],
+        preamble: "Please answer the following questions. Let the experimenter know when you are done.",
+        button_label: "Done",
+        randomize_question_order: false
+        }
+    timeline.push(age_lang_demo);
+
+
+
+    
+// Instructions
+    //General instructions 
+    var overview_instructions = {
+        type: "html-keyboard-response",
+            stimulus: "<br><strong>Overview</strong></br>"+
+            "<p>In this study, we will ask you to complete several short tasks, each taking about 2-15 minutes."+
+            "<p>Please press the space bar to start the first task",
+                
+            post_trial_gap: 500,
+            choices: [32]
+        };
+    timeline.push(overview_instructions);
+
+
+
+    //MELISSA TO DO
+    //5. CHECK GRAYS? 
+    // ELIMINATE DARK COLOR SET
+    
+
+// ------------------------------------ START OF EXPERIMENT TRIALS ------------------------------------//
+
+/*----------------------------------Part 1: Flower Categorization------------------------------------ */
+
+
+//Randomly select species order
+var speciesLabels = ["GORK", "MUND", "LEMZ", "BLIT"]
+    speciesLabels.sort(() => Math.random() - 0.5);
+ var speciesLabelOrdered= speciesLabels
+
+ console.log(speciesLabelOrdered); // Example output: ["LEMZ", "GORK", "MUND", "BLIT"]
+
+
+// Categorization Instructions 
+    var cat_instructions = {
+        type: "image-keyboard-responseMAS",
+        stimulus: "img/flowers/allflowers.png",
+        prompt1:  "<br><strong>Task 1 of 3</strong></br>"+
+        "<p>You have traveled to the alien planet Sparl where the scientists have just discovered 4 new flower species."+
+        "<br>Your job, as the research assistant, is to sort the flowers into their 4 different flower species, as shown below."+ 
+        "<br>The flowers have slightly different features that distinguish them from each other. Your task is to learn how to identify each flower species based on their features."+
+                "<div style='display: flex; justify-content: space-between; width: 400px; margin: 10px auto; font-size: 20px;'>"+
+            "<div>" + speciesLabelOrdered[0] + "</div>" +
+            "<div>" + speciesLabelOrdered[1] + "</div>" +
+            "<div>" + speciesLabelOrdered[2] + "</div>" +
+            "<div>" + speciesLabelOrdered[3] + "</div>" +
+             "</div>",
+         prompt2: "A species name will appear on the screen, and under it will be two different flowers, one on the left and on on the right."+ 
+         "<br>If you think the species name belongs to the flower on the left, press the left arrow key. "+
+        "<br>If you think the species name belongs to the flower on the right, press the right arrow key."+
+        "<p>After you respond, you will be told the correct answer and the incorrect flower will disappear and the correct flower will move to the center of the screen under its species name." +
+        "<br>There will then be a brief pause and the next trial will begin.</p>"+
+        "<p>At first, you may feel like you are guessing, but as you see more flowers, you may begin to feel more confident in your responses."+
+        "<p>There will be 2 blocks of trials for this task. At the end of each block, you will get to see your accuracy from that block."+
+        "<br>This part of the experiment will take about 8 minutes."+
+        "<p>If you have any questions, please ask them now."+
+        "<br>When you are ready, press the spacebar to begin.</p>",
+        post_trial_gap: 500, 
+        choices: [32]
+    }; 
+    timeline.push(cat_instructions); 
+
+
+   
+// Setting up parameters for categorization //
+var breakCounterFlower= 0; // Counts number of trials for a block
+    var blockCounterFlower = 0; // Counts which block
+    var numSpecies = 4; 
+    var numDistractors = 4;
+    var numLeftRight = 2;
+    var numRepetitions = 4;
+    var numTotalTrialsFlowers = 96;
+   // let trialCounter = new Array(numRepetitions).fill().map(() => Array(numLeftRight).fill().map(() => Array(numDistractors).fill().map(() => Array(numSpecies).fill(0))))
+
+
+    let trialCounter = Array.from({ length: numRepetitions }, () =>
+    Array.from({ length: numLeftRight }, () =>
+        Array.from({ length: numDistractors }, () =>
+            Array(numSpecies).fill(0)
+        )
+    )
+);
+
+                  
+// Categorization Procedure // 
+for (rep = 0; rep <numRepetitions;){
+
+    //Each unique one to start
+    for (t = 0; t < 24;){    
+
+  
+        // Randomly selecting a target
+        var whichTargetSpecies =  getRandomIntInclusive(0,numSpecies-1);
+        var whichTargetLabel = speciesLabelOrdered[whichTargetSpecies]
+
+        // Randomly selecting a non-target (distractor)
+        var whichDistractorSpecies;
+            do {
+                whichDistractorSpecies = getRandomIntInclusive(0, numSpecies-1);
+            } while (whichDistractorSpecies === whichTargetSpecies);
+
+        
+        // Randomly select which side the target appears on
+        var whichLeftRight = getRandomIntInclusive(0,numLeftRight-1);
+
+        //console.log("Trying:", whichTargetSpecies, whichDistractorSpecies, whichLeftRight);
+
+
+            //specifying location
+            if (whichLeftRight== 0){
+                var targetPosition = "LEFT"
+                var distractorPosition = "RIGHT"
+                var stimulusLeft = whichTargetSpecies
+                var stimulusRight = whichDistractorSpecies
+                var correctStimulus = stimulusLeft 
+
+            }else if (whichLeftRight == 1){
+                var targetPosition = "RIGHT"
+                var distractorPosition = "LEFT"
+                var stimulusLeft = whichDistractorSpecies
+                var stimulusRight = whichTargetSpecies
+                var correctStimulus = stimulusRight
+            }
+
+
+           // console.log("Trying:", whichTargetSpecies, whichDistractorSpecies, whichLeftRight);
+          //  console.log("rep:", rep, "whichLeftRight:", whichLeftRight, "whichDistractorSpecies:", whichDistractorSpecies, "whichTargetSpecies:", whichTargetSpecies);
+          //  console.log("trialCounter dimensions:", trialCounter.length, trialCounter[rep].length, trialCounter[rep][whichLeftRight].length, trialCounter[rep][whichLeftRight][whichDistractorSpecies].length);
+  
+        //Alien counter        
+        if (trialCounter[rep][whichLeftRight][whichDistractorSpecies][whichTargetSpecies] == 0){
+
+
+
+            console.log("target", whichTargetSpecies, "left", stimulusLeft, "right", stimulusRight)
+
+            // Found a valid combination
+            foundValidTrial = true;
+
+            // ITI
+            timeline.push(fixation)
+
+               // Categorization trial 
+               var cat_trial = {
+                    type: 'image-keyboard-responseMAS-flowerCat',
+                    stimulusLeft: "img/flowers/flower"+stimulusLeft+".png",
+                    stimulusRight: "img/flowers/flower"+stimulusRight+".png",
+                    stimulus_height: 250,
+                    choices: [37, 39],
+                    labels: whichTargetLabel+"?", 
+                    prompt: "<p>-<br>-<br>-</p>", 
+                    prompt2: "Which flower is a",
+                    feedbackTrial: 0,
+                    stimulusTarget: whichTargetSpecies,
+                    stimulusTargetName: whichTargetLabel,
+                    leftStim: stimulusLeft ,
+                    rightstim: stimulusRight, 
+                    species: targetPosition, 
+                    rgbBackground: [rBackground, gBackground, bBackground],
+                    correctImage: correctStimulus, 
+                    on_finish: function(data){
+                        const key = data.key_press;
+                        const targetSide = data.species; // should be "LEFT" or "RIGHT"
+
+                        if (key === 37) {
+                            data.correct = (targetSide === "LEFT");
+                        } else if (key === 39) {
+                            data.correct = (targetSide === "RIGHT");
+                        } else {
+                            data.correct = false;
+                        }
+                        console.log("Trial finished: Key pressed:", key, "Target position:", targetSide, "Correct:", data.correct);
+
+                    }
+                }
+                            
+                timeline.push(cat_trial)
+
+                console.log("Last trial data:", jsPsych.data.get().last(1).values()[0]);
+
+            
+            // Feedback sequence: Two Parts: 1) Text feedback 2) Move alien under name
+            // Part 1: Give text feedback 
+            var text_feedback = {
+                    type: 'image-keyboard-responseMAS-flowerCat',
+                    stimulusTarget: "img/flowers/flower"+whichTargetSpecies+".png",
+                    stimulusLeft: "img/flowers/flower"+stimulusLeft+".png",
+                    stimulusRight: "img/flowers/flower"+stimulusRight+".png",
+                    stimulus_height: 250,
+                    choices: [37, 39],
+                    labels: whichTargetLabel+"?", 
+                    prompt: "<p>-<br>-<br>-</p>", 
+                    prompt2: "Which flower is a",
+                    feedbackTrial: 0,
+                    stimulusTarget: whichTargetSpecies,
+                    leftStim: stimulusLeft ,
+                    rightstim: stimulusRight,   
+                    stimulusTargetName: whichTargetLabel,
+                    species: targetPosition, 
+                    trial_duration: 500,
+                    response_ends_trial: false, 
+                    feedbackTrial: 1,
+                    prompt: function(){
+                        const last_trial = jsPsych.data.get().last(1).values()[0];
+                        const correct = last_trial.correct;
+                        const targetLabel = last_trial.stimulusTargetName || "???";
+
+                        if (correct === true) {
+                            return `<p>YES.<br>This is a<br>${targetLabel}</p>`;
+                        } else if (correct === false) {
+                            return `<p>NO.<br>This is a<br>${targetLabel}</p>`;
+                        } else {
+                            return "<p>-<br>BROKEN<br>-</p>";
+                        }
+                    }
+               }   
+               timeline.push(text_feedback) 
+
+
+                //Part 2: Motion Feedback 
+                var text_feedback_motion = {
+                    type: 'image-keyboard-responseMAS-flowerCat',
+                    stimulusTarget: "img/flowers/flower"+whichTargetSpecies+".png",
+                    stimulusLeft: "img/flowers/flower"+stimulusLeft+".png",
+                    stimulusRight: "img/flowers/flower"+stimulusRight+".png",
+                    stimulus_height: 250,
+                    choices: [37, 39],
+                    labels: whichTargetLabel+"?", 
+                    prompt: "<p>-<br>-<br>-</p>", 
+                    prompt2: "Which flower is a",
+                    feedbackTrial: 0,
+                    stimulusTarget: whichTargetSpecies,
+                    leftStim: stimulusLeft ,
+                    rightstim: stimulusRight,   
+                    stimulusTargetName: whichTargetLabel,
+                    species: targetPosition, 
+                    trial_duration: 500,
+                    response_ends_trial: false, 
+                    feedbackTrial: 2,
+                    prompt: function(){
+                        const last_trial = jsPsych.data.get().last(2).values()[0];
+                        const correct = last_trial.correct;
+                        const targetLabel = last_trial.stimulusTargetName || "???";
+
+                        if (correct === true) {
+                            return `<p>YES.<br>This is a<br>${targetLabel}</p>`;
+                        } else if (correct === false) {
+                            return `<p>NO.<br>This is a<br>${targetLabel}</p>`;
+                        } else {
+                            return "<p>-<br>BROKEN<br>-</p>";
+                        }
+                    }
+    
+                 }   
+                timeline.push(text_feedback_motion) 
+
+
+          //  counts after finishing the trial
+           breakCounterFlower = breakCounterFlower + 1;    
+
+
+            // Accuracy block 
+            if (breakCounterFlower == numTotalTrialsFlowers/4){
+                // if (t < numTotalTrials/4){
+                //      whichBlockFlower = 1;
+                // } else if (t >=numTotalTrials/4 && t < (numTotalTrials/4)*2){
+                //       whichBlockFlower = 2;
+                //  } else if (t >=(numTotalTrials/4)*2 && t < (numTotalTrials/4)*3){
+                //         whichBlockFlower = 3;
+                // } else if ((t >=numTotalTrials/4)*3){
+                //         whichBlockFlower = 4;
+                // }
+
+               var accuracy_block_flower = {
+                    type: "html-keyboard-response",
+                    stimulus: function () {
+                        var incrementCount = (function (){
+                        return function () {blockCounterFlower += 1;  return blockCounterFlower}
+                    })(); 
+                    incrementCount();
+
+                    // Calculate the accuracy 
+                    var accuracyFlower = Math.round(jsPsych.data.get().last((numTotalTrialsFlowers/4)*4).filter({correct:true}).count()/(numTotalTrialsFlowers/4)*100); //number of trials in a block*4(fixation + trial + 2feedback for each alien)
+                    return "<p>You have completed block <br>"+blockCounterFlower+" of 4 for this task of the experiment.</p>" +
+                    "<p> Your accuracy for this block was "+accuracyFlower+"%." +
+                    "<br></br>" +
+                    "<p> Please press the spacebar when you are ready to start the next block. </p>";},
+                    choices: [32]
+                } 
+                timeline.push(accuracy_block_flower)
+                breakCounterFlower = 0;         
+            }
+
+            trialCounter[rep][whichLeftRight][whichDistractorSpecies][whichTargetSpecies] = 1
+            t++;
+        } 
+    }rep++
+}
+
+ // Questionnaire 1 
+    // var questionnaire_1 = {
+    //     type: 'survey-text',
+    //     questions: [
+    //         {prompt: "Please describe what strategy you used for the previous task.", name: 'Strategy', rows: "6", columns: "60", required: true},
+    //         {prompt: "Were there any visual features that you paid particular attention to complete the previous task?" +
+    //         "<br>If so, what features did you attend to? If not please type 'None'.", name: "Features", rows: "6", columns: "60", required: true}
+    //     ],
+    //     preamble: "Please answer the following questions.",
+    //     button_label: "Done",
+    //     randomize_question_order: false
+    // }
+    // timeline.push(questionnaire_1); 
+
+
+
+  //  if (expType == 0){
+
+    // Part Completion 
+    var part_completionExperimenter = {
+        type: "survey-text",
+        questions: [
+            {prompt:"<p>Great job!</p> You have completed task 1 of 3"+
+                    "<p>Please let the experimenter know you have finished. <br></br>"+
+                      "<br>Experimenter, please enter code to continue.", columns: "10", required: true}], 
+        button_label: "Continue",
+        passwordType: 1
+    
+    };
+    timeline.push(part_completionExperimenter); 
+
+
+
+//}
+// else if (expType > 0){
+//         var part_completion = {
+//             type: "html-keyboard-response",
+//             stimulus: "<p>Great job!</p> You have completed this task."+
+//                 "<p> Please press the spacebar to continue.</p>",
+//             choices:[32],
+//         }
+//         timeline.push(part_completion);
+
+//     }
+
+/* --------------------------------------- Part 2: Associations ratings ------------------------ */
+
+/*
+//Create array of squares for block instructions screen
+    var stimulusColor = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    var alienColorText = ["MUND", "BLIT", "LEMZ", "GORK"]
+    var arrayCounter = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    var numTotalColors = 35; 
+    var numTotalTrials = 35*4*2
+    var numColorsPerCat = 35
+    var numColorCats = 4 
+
+
+    //create looop of colors
+    for (i = 0; i < numTotalColors;){ //
+  
+        var whichColor1 = getRandomIntInclusive(0,numColorsPerCat-1); 
+
+        if (arrayCounter[whichColor1] == 0){
+            stimulusColor[i] = [promptedColorR1[whichColor1], promptedColorG1[whichColor1], promptedColorB1[whichColor1]]
+            arrayCounter[whichColor1] = 1;
+            i++;
+        }        
+    }   
+
+
+//Instructions
+var rate_instructions = {
+        type: "image-slider-responseMAS-randomInst-colorSquare-2",
+        stimulus: stimulusColor,
+        stimulus_height: 50, 
+        maintain_aspect_ratio: true,
+        labels: ['Not at all', 'Very Much'],
+        response_ends_trial: true,
+        prompt1: "<br><strong>TASK 2 of 3</strong></br>"+
+        "<br>During this task you will be presented with each of the colored squares from the set below, one at a time" +
+        "<br>You will be asked to rate how much you associate each color with the flower species:</p>"+
+        "<p>MUND, BLIT, LEMZ, and GORK</p>" +
+        "<p>You will be asked to rate the association between each color and species on a scale from 'Not at all' to 'Very much' like the one below."+
+        "<br>To respond, slide the cursor along the response scale and then click the 'Continue' button to record your response and start the next trial.</p>",
+        prompt2: "<br>There will be four blocks of trials, one for each flower species. You will be asked to rate all of the colors for each flower species before going on to the next block."+
+         "<p>Before we begin, please look at all the colors below. Without touching the screen,"+
+            "<br>please point to a color that you think is VERY MUCH associated to MUND flowers."+
+            "<br>please point to a color that you think is NOT AT ALL associated to MUND flowers."+
+            "<p>Now lets do the same for the BLIT flowers: a color VERY much associated, and one NOT AT ALL associated."+
+            "<br>And for the LEMZ flowers: a color VERY much associated, and one NOT AT ALL associated."+
+            "<br>And for the GORK flowers: a color VERY much associated, and one NOT AT ALL associated."+
+        "<p>Those colors represent the far ends of the rating scale, such that they would be rated on the far left/right and all other colors would be rated somewhere in-between.</p>"+
+       // "<br>The color you associate the least for each species would be rated on the far left of the scale, and the color you associate the most for each species would be rated on the far right of the scale. All other colors would be rated somewhere in-between."+
+        "<p>This task will take about 10 minutes to complete"+
+         "<br>If you have any questions, please ask them now."+
+          "<br>When you are ready, click the 'Start' button to begin.</p>",
+        require_movement: false, 
+        step: 1,
+        slider_width: 400,
+        start: 0,
+        min: -200,
+        max: 200, 
+        button_label: "Start"
+    }
+    timeline.push(rate_instructions); 
+
+
+     
+// Preparation: set up conditions and counters
+    var numSpecies = 4
+    var numColorCats = 1
+    var numColorsPerCat = 35// 11 main + black& white
+    var numRepetitions = 2  
+    var breakCounter = 0; // Counts which block 
+    var percentCounter = 0; 
+    var whichBreak = 1;
+    var totalTrials = 280; 
+    var speciesText = ["BLIT", "GORK", "LEMZ", "MUND"]
+    var alienColorText = ["YELLOW", "PINK"]
+    let CounterFullAssoc = new Array(numSpecies).fill().map(() => Array(numRepetitions).fill().map(() => Array(numColorsPerCat).fill(0)))
+
+
+//Randomly select species order
+// Shuffle the array once
+    speciesText.sort(() => Math.random() - 0.5);
+    var speciesOrder = speciesText
+    console.log(speciesOrder); // Example output: ["LEMZ", "GORK", "MUND", "BLIT"]
+
+
+    
+//loop through two species
+for (species = 0; species < numSpecies;){ 
+
+    var whichSpecies = speciesOrder[species]
+
+
+        if(whichSpecies == "BLIT"){ //FILK target
+            var speciesN = "BLIT"
+            var speciesNames = "How much do you associate<br>this color with<br><b>BLIT</b> flowers?"
+            var whichColorCat = 0; //yellow 
+            var whichSpeciesNum = 0; 
+
+        }else if(whichSpecies == "GORK"){  //SLUB target
+            var speciesN = "GORK"
+            var speciesNames = "How much do you associate<br>this color with<br><b>GORK</b> flowers?"
+            var whichColorCat = 1; //pink
+            var whichSpeciesNum = 1; 
+
+        }else if(whichSpecies == "LEMZ"){  //SLUB target
+            var speciesN = "LEMZ"
+            var speciesNames = "How much do you associate<br>this color with<br><b>LEMZ</b> flowers?"
+            var whichColorCat = 2; //pink
+            var whichSpeciesNum = 2; 
+        }else if(whichSpecies == "MUND"){  //SLUB target
+            var speciesN = "MUND"
+            var speciesNames = "How much do you associate<br>this color with<br><b>MUND</b> flowers?"
+            var whichColorCat = 3; //pink
+            var whichSpeciesNum = 3; 
+        }
+        console.log(whichSpecies)
+
+
+
+        // Block break: Only presents after the end of the first block //
+        if (species > 0){
+            var block_break1 = {
+                type: "html-button-response",
+                stimulus:  "<p>Great Job! You finished the first block.<br></br> You'll now move to the next species.<br></br></p>",
+                choices: ['Continue'],   
+            };
+            timeline.push(block_break1)
+        }
+
+        // Block break: Presents at the start of each block  //
+        var block_break2 = {
+            type: "html-button-response",
+            stimulus: "<p>In this block of trials, you will be asked to rate how much you associate each color with:</p> "+
+               '<div style= "font-size:30px;">'+speciesN+' flowers</div><br></br>',
+            choices: ['Continue'],   
+            };
+        timeline.push(block_break2)
+
+
+
+    // Repeat each color presentation twice // 
+    for (rep = 0; rep < 2;){
+                         
+        //loop through all colors
+        for (color = 0; color < numColorsPerCat;){ 
+            
+      
+        // Randomly select specific color from category //
+        var whichColorSquare = getRandomIntInclusive(0,numColorsPerCat-1);
+        var whichColorSquareCat = whichColorSquare
+
+        //shift numbers called based on which color sequence (pinks 0-10; yellows 11-21)
+        // if(whichColorCat == 0){
+        //     var whichColorSquareCat = whichColorSquare
+        // }else if (whichColorCat == 1){
+        //     var whichColorSquareCat = whichColorSquare + numColorsPerCat
+        // }
+
+
+        // Check if target word has been presented yet.
+        if (CounterFullAssoc[whichSpeciesNum][rep][whichColorSquare] == 0){
+
+            // ITI //
+            timeline.push(fixation)
+
+          
+            // Assoc ratings //
+            var assoc_rating_trial = {
+                type: 'image-slider-responseMAS-colorSquare-assoc',
+                stimulus: [promptedColorR1[whichColorSquareCat], promptedColorG1[whichColorSquareCat], promptedColorB1[whichColorSquareCat]],
+                colorNumber: whichColorSquareCat,
+                prompt_location: "above",       
+                prompt: speciesNames,                  
+                labels: ['Not at all', 'Very much'],
+                feedbackTrial: 0, 
+                response_ends_trial: true,
+                slider_width: 400,
+                slide_width: 100, 
+                require_movement: true, 
+                step: 1,
+                start: 0,
+                min: -200,
+                max: 200        
+            }
+            timeline.push(assoc_rating_trial)
+        
+
+            //update counter
+            CounterFullAssoc[whichSpeciesNum][rep][whichColorSquare] = 1; //Marks that the trial was completed
+            color++
+        }
+        }
+        rep++
+    } 
+    species++
+}
+
+
+
+
+    // Part Completion 
+    var part_completionExperimenter = {
+        type: "survey-text",
+        questions: [
+            {prompt:"<p>Great job!</p> You have completed part 2."+
+                    "<p>Please let the experimenter know you have finished. <br></br>"+
+                      "<br>Experimenter, please enter code to continue.", columns: "10", required: true}], 
+        button_label: "Continue",
+        passwordType: 1
+    
+    };
+    timeline.push(part_completionExperimenter); 
+
+
+
+
+    
+/*----------------------------------Part 3: feature diagnosticity task  ------------------------------------ */
+/*
+
+
+ var feat_instructions = {
+           type: 'image-slider-responseMAS-randomInst',  
+           stimulus: "img/flowers/featInstr.png",
+           labels: ['Not at<br>all helpful', 'Very<br>helpful'],
+           response_ends_trial: true,
+           prompt1: "<br><strong>Task 3 of 3</strong></br>"+
+           "<p>In this task, you will be asked to reflect on your learning of the flowers during Task 1."+ 
+            "<br>On each trial, you will be shown a silhouette of the flowers, such as the one below. A single arrow will point to one specific feature of the flower, either the petals, the stem, or the center.",
+            prompt2: "<p>Your task is to indicate how much that feature helped you sort the flower species during Task 1."+
+                "<br>Please make your response using the slider scale to indicate how helpful the feature was, from 'not at all helpful' to 'very helpful'."+ 
+                "<p>After you move the slider, press the 'continue' button to begin the next trial."+
+                "<br>This task will take about 2 minutes to complete"+
+               "<p>If you have any questions, please ask them now."+
+                "<br>When you are ready, click the 'Start' button to begin.</p>",
+           require_movement: false, 
+           step: 1,
+           slider_width: 400,
+           start: 0,
+           min: -200,
+           max: 200, 
+           button_label: "Start"
+       }
+  timeline.push(feat_instructions); 
+
+
+//Create array of squares for block instructions screen
+   var stimulusColor = [0,0,0,0,0,0,0,0,0,0,0,0]
+   var alienColorText = ["PETALS", "CENTER", "STEM"]
+   var arrayCounter = [0,0,0,0,0,0,0,0,0,0,0,0]
+   var numTrials = 12; 
+
+
+// Preparation: set up conditions and counters
+    var partText = ["PETALS", "CENTER", "STEM"]
+    var Counter = [[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+   var numParts = 3
+   var numRepetitions = 4  
+   var totalTrials = 12;  
+
+       
+//present each color for a sequence
+for (t = 0; t < numTrials;){
+
+    var whichPart = getRandomIntInclusive(0,numParts-1);
+    var whichRep = getRandomIntInclusive(0,numRepetitions-1);
+
+
+    // Check if target word has been presented yet.
+    if (Counter[whichPart][whichRep] == 0){
+
+        // ITI //
+        timeline.push(fixation)
+
+
+        // Typicality Trial //
+        var typicality_rating_trial = {
+                type: 'image-slider-responseMAS',
+                stimulus: "img/flowers/feat"+whichPart+".png",
+                colorNumber: whichPart,
+                prompt_location: "above",                         
+                labels: ['Not at all<br>helpful', 'Very<br>helpful'],
+                block: whichRep, 
+                feedbackTrial: 0, 
+                response_ends_trial: true,
+                stimulus_height: 250,
+                slider_width: 400,
+                prompt: "How helpful/important was this feature during Task 1?",
+                require_movement: true, 
+                step: 1,
+                start: 0,
+                min: -200,
+                max: 200        
+                }
+        timeline.push(typicality_rating_trial)
+
+
+        Counter[whichPart][whichRep] = 1
+        t++
+    }
+}
+
+
+    // Part Completion 
+    var part_completionExperimenter = {
+        type: "survey-text",
+        questions: [
+            {prompt:"<p>Great job!</p> You have completed part 3."+
+                    "<p>Please let the experimenter know you have finished. <br></br>"+
+                      "<br>Experimenter, please enter code to continue.", columns: "10", required: true}], 
+        button_label: "Continue",
+        passwordType: 1
+    
+    };
+    timeline.push(part_completionExperimenter); 
+
+
+
+
+   
+/* ---------------------------------- End of main experiment ---------------------------------------- */
+
+/* ------------------------------------ Color vision check --------------------------------------- */
+
+
+if (expType == 1){ //in-person (use booth A/B calibrations)//MELISSA
+
+// ishihara
+var ishiharaReal= {
+type: 'survey-multi-select',
+questions: [
+    {prompt: "Experimenter: please complete ishihara plates", name: 'colorvision', rows: "1", columns: "3", required: true,
+        options: ["Typ", "Atyp", "NA"],
+        horizontal: false,
+        required: true,
+        name: 'ishihara'},
+    ],
+    
+}
+timeline.push(ishiharaReal);
+
+
+}
+// else if (expType >0){ //online (use srgb colors)
+
+// //Function for ishihara plates (online only)
+// ishiharaPlates()
+
+//}
+
+
+/* --------------------------------------- End Color vision check ------------------------ */
+
+
+// Exit fullscreen
+    timeline.push({
+    type: 'fullscreen',
+    fullscreen_mode: false
+})
+
+
+//Saving data
+    //server calling with AJAX
+    function saveData(data_object) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'write_data.php');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+            if(xhr.status == 200){
+            var response = JSON.parse(JSON.stringify(xhr.responseText));
+
+            }
+        };
+        xhr.send(data_object.json());
+        }
+
+    //Remove (from jspsych data) the first line of data (consent form), which has already been written to the database & create a new variable with the rest of the data to save
+    function finalSave (){
+        var data_to_save = jsPsych.data.get().filterCustom(function(trial){
+            return trial.trial_index > 0;})
+        saveData(data_to_save)
+        }
+
+    //Call function to save all the data
+    timeline.push({
+        type: 'call-function',
+        func: finalSave
+        });
+
+
+    //Record ID of subjects who completed the experiment     
+    function logComplete (){
+            serverComm.completion_data(workerID)
+    }
+
+    //Call function to save the worker ID
+    timeline.push({
+        type: 'call-function',
+         func: logComplete
+        });
+
+
+
+//Present completion/debriefing screen
+var end_completion = {
+        type: "html-keyboard-response",
+        stimulus: function(){
+
+
+          //  if (expServer == 1){
+                jsPsych.data.get().localSave('csv',randomID+".csv") // saves to local device if not on server. 
+                 //return ""+debriefScript+""+
+                 return "<p>Great job! You may now close this window.</p>";
+            
+            // }else if (expServer == 1){ //MELISSA
+                
+
+            //  //SONA version
+            // if (expType < 2){
+            //     return ""+debriefScript+""+
+            //     "<p>Thank you for participating!"+
+            //     "<p>You may now close this window.</p>";
+               
+
+            //  // mTurk version
+            // }else if (expType == 2){
+            //     return ""+debriefScript+""+
+            //     "<p>Thank you for participating!"+
+            //     "<br>Please enter the following code on your mTurk HIT: <br>"+complete_code+"</p>"+
+            //     "<p>You may now close this window.</p>";
+            // }}
+        },
+
+        choices: jsPsych.NO_KEYS} //Prevents any input reponse from moving beyond the screen
+    timeline.push(end_completion)
+
+
+ // Preload images - this occurs after going full screen 
+/* var c = 0;  
+    var imgSet = [] ;
+    for (i = 0; i <= 1;i++){
+        for (j =0; j <60;j++){
+            if (i == 0){
+                alienName = "img/0/Pointy-"+j+".png";
+            }else{
+                alienName = "img/0/Curvy-"+j+".png";
+            }
+            imgSet[c] = alienName; 
+            c = c+1; 
+            }}*/
+
+
+// Run the main timeline sequence this timeline is embedded in the register_success & condition_success function 
+    jsPsych.init({
+            timeline: timeline,
+           // preload_images: imgSet,
+        })
+
+    
+  } // end of condition_success function
+ }//end of register_success function
+}// end of booth function
+
+
+// Run the timeline sequence // - Timeline1 for initial screen (before ID recorded)
+jsPsych.init({
+     timeline: timeline1,
+    })
+
+
+    </script>
+</html>
+
