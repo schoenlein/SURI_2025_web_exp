@@ -52,6 +52,7 @@
         <script src = "colorCalibration_srgb_featureDiag.js"></script>
         <script src = "colorCalibration_featureDiag.js"></script>
         <script src = "ishiharaPlates.js"></script>
+        <script src="https://unpkg.com/@jspsych-contrib/plugin-pipe"></script>
 
         <style>
         </style>
@@ -181,6 +182,11 @@ if (expType == 1){ //MELISSA
         var workerID = urlvar.workerId
     }
 
+
+    
+    const subject_id = jsPsych.randomization.randomID(10);
+    const filename = `${subject_id}.csv`;
+            
     
 
 //Enter fullscreen mode- asks participants to press "continue" button to enter full screen
@@ -552,7 +558,7 @@ var speciesLabels = ["GORK", "MUND", "LEMZ", "BLIT"]
 // Categorization Instructions 
     var cat_instructions = {
         type: "image-keyboard-responseMAS",
-        stimulus: "img/flowers/allflowers.png",
+        stimulus: "img/flowers/allFlowers.png",
         prompt1:  "<br><strong>Task 1 of 3</strong></br>"+
         "<p>You have traveled to the alien planet Sparl where the scientists have just discovered 4 new flower species."+
         "<br>Your job, as the research assistant, is to sort the flowers into their 4 different flower species, as shown below."+ 
@@ -1221,6 +1227,9 @@ timeline.push(ishiharaReal);
 })
 
 
+
+
+
 //Saving data
     //server calling with AJAX
     function saveData(data_object) {
@@ -1236,6 +1245,9 @@ timeline.push(ishiharaReal);
         xhr.send(data_object.json());
         }
 
+
+        
+       
     //Remove (from jspsych data) the first line of data (consent form), which has already been written to the database & create a new variable with the rest of the data to save
     function finalSave (){
         var data_to_save = jsPsych.data.get().filterCustom(function(trial){
@@ -1261,6 +1273,14 @@ timeline.push(ishiharaReal);
          func: logComplete
         });
 
+
+        const save_data = {
+                type: jsPsychPipe,
+                action: "save",
+                experiment_id: "w9CB1tomDMJn",
+                filename: filename,
+                data_string: ()=>jsPsych.data.get().csv()
+              };
 
 
 //Present completion/debriefing screen
@@ -1298,6 +1318,7 @@ var end_completion = {
 
 
  // Preload images - this occurs after going full screen 
+ //var imgSet = "img/flowers/allFlowers.png"
 /* var c = 0;  
     var imgSet = [] ;
     for (i = 0; i <= 1;i++){
