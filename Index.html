@@ -165,7 +165,7 @@ if (expType == 1){ //MELISSA
 // Get & create subject ID
     //Give each subject a random ID
     var randomID = Math.floor((Math.random() * 10000) + 10000); // Create a random ID code for each participant
-    var subject_id = randomID // Create a random ID code for each participant
+  //  var subject_id = randomID // Create a random ID code for each participant
     var urlvar = jsPsych.data.urlVariables();
 
     //Give each subject a completion code to enter into mTurk
@@ -1318,7 +1318,7 @@ var end_completion = {
 
 
  // Preload images - this occurs after going full screen 
- var imgSet = "img/flowers/allFlowers.png"
+ //var imgSet = "img/flowers/allFlowers.png"
 /* var c = 0;  
     var imgSet = [] ;
     for (i = 0; i <= 1;i++){
@@ -1336,7 +1336,7 @@ var end_completion = {
 // Run the main timeline sequence this timeline is embedded in the register_success & condition_success function 
     jsPsych.init({
             timeline: timeline,
-            preload_images: imgSet,
+          //  preload_images: imgSet,
         })
 
     
