@@ -8,7 +8,7 @@ function colorCalibration_srgb() {
 
 /*----------------------------------Part 2: ENTER DESIRED COLOR COORDINATES IN xyY ------------------------------------ */
 
-numColors = 20 //currently includes background color - as last color, 
+numColors = 22 //currently includes background color - as last color, 
 
 R = [248,
     248,
@@ -29,6 +29,8 @@ R = [248,
     51,
     35,
     4,
+    0,
+    255,
     121
 ]
 
@@ -51,6 +53,8 @@ G = [83,
     66,
     68,
     70,
+    0,
+    255,
     121
 ]
 
@@ -73,6 +77,8 @@ B = [92,
     143,
     145,
     147,
+    0,
+    255,
     121
 ]
 
