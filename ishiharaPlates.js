@@ -33,10 +33,11 @@ function ishiharaPlates() {
 var ishihara_instructions = {
     type: jsPsychHtmlKeyboardResponse,
         stimulus: 
+        "<strong>Final task</strong>" +
         "<p>Next, you will see an image on the screen." +
         "<br>If you see a number in the image, please carefully type that number in the box.</p>"+
         "<p>If you do not see a number in the image, please type 'None' in the box."+
-        "<br>This part of the experiment will take about 2 minutes.</p>"+
+        "<br>This task will take about 1 minute to complete.</p>"+
         "<p>Please press the spacebar to begin.</p>",
         post_trial_gap: 500,
         choices: [" "]
@@ -105,6 +106,7 @@ var ishihara_instructions = {
                 };
                 timeline.push(fixation)
 
+
             //Present trial
             var ishihara_plate = {
                 type: jsPsychSurveyText,
@@ -113,22 +115,27 @@ var ishihara_instructions = {
                     {prompt: 'Carefully type any number you see (e.g., 50) or type "none".'}, 
                 ],
                correctAnswer: answer,
-                on_start: function(trial) {
-                    correctAnswer = trial.correctAnswer}, //recorded in the "prompt" column of the output
                 questions: [
                     { prompt: "Carefully type what number you see. "+
                         "<p>If you do not see a number, type 'None'.",
                     rows: 1, 
-                    columns: 1,
+                    columns: 3,
                     required: true,
                     name: 'ishihara'}],
                 button_label: "Next",
+                on_start: function(trial) {
+                    correctAnswer = trial.correctAnswer}, //recorded in the "prompt" column of the output
                 on_finish: function(data){
                     if(data.responses == correctAnswer){
                         data.correct = 1;  //correct
                     } else {
-                        data.correct = 0;}} //incorrect
-                }         
+                        data.correct = 0;}}, //incorrect
+                data: {
+                    task: "ishihara",
+                    answer: answer
+                }
+                }       
+
             timeline.push(ishihara_plate) 
             plateCounter[whichPlate] = 1; 
             plateNum++

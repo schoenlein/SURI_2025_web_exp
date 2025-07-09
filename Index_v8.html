@@ -32,15 +32,19 @@
 // ---------- UPDATE THESE AS NEEDED------------------//
 
     //General experiment info to update
+    console.log("Updated last: 7/9")
+
+    var expServer = 1 // 0 = testing mode; 1 = on server 
+        console.log("serverMode", expServer)
+
     var expType = 2 // 0 = SONA; in-lab version; 1 = sona ONLINE ; 2 = CloudResearch online version (relevant for consent & debriefing)
         console.log("consent:", expType)
-        console.log("Updated last: 7/9")
 
   
     var expTime = 15; // How long experiment will take in minutes
     var experimenterName = "mschoenl@highpoint.edu"  //Update to your contact info. this is presented if an error arises for a participantd
     var numConditions = 2; //Number of conditions. 
-    var numTasks = 2;  //Number of experimental tasks (not counting demographics/consent)
+    var numTasks = 3;  //Number of experimental tasks (add 1 to include Color vision test)
 
     //CloudResearch completion code 
     var completion_code = "268FC66898";  //Code copied from mTurk Cloud Research Fixed completion code
@@ -59,12 +63,25 @@
         return "If you leave or refresh the page, you will not be able to finish the experiment.";
     };
 
+    //initialize and prompt global variables to record
+    var jsPsych = initJsPsych({
+      on_trial_finish: function(data) {
+          if (data) {
+            data.subjectID = subject_id;
+            data.condition = whichCondition;
+            data.workerID = workerID;
+            data.startTime = start_time;
+          }
+      },
+      on_finish: function() {
+        if (expServer == 0){
+          jsPsych.data.displayData();
+          jsPsych.data.get().localSave('csv',subject_id+".csv", {flatten:true}) // saves to local device if not on server. 
+        }
+      }
+    });
 
-    //general overview/opening items
-    var jsPsych = initJsPsych();
-    var timeline = [];
 
-      
     //give subjects a random ID
     const subject_id = jsPsych.randomization.randomID(10);
     const filename = `${subject_id}.csv`;
@@ -82,11 +99,8 @@
     var whichCondition = assigned_condition; 
       console.log("whichCondition: ", whichCondition)
 
-  // Get Start time
+    // Get Start time
     var start_time = new Date();
-
-  //Record mturk/SONAID, condition, subjectID, and date info
-    jsPsych.data.addProperties({workerID: workerID,  subjectID: subject_id, condition: whichCondition, dateInfo: start_time}); //CHECK THAT THESE OUTPUT
 
 
     //Initialize colors
@@ -95,6 +109,9 @@
     var promptedColorG1 = calibrationColors["Green"]
     var promptedColorB1 = calibrationColors["Blue"]
 
+
+    //start timeline
+    var timeline = [];
 
 
 /*----------------------------------Standard functions & variables ------------------------------------ */
@@ -134,7 +151,6 @@
        choices: ['Begin Experiment'] 
     };
     timeline.push(welcome);
-
 
  
  // Consent form
@@ -183,7 +199,7 @@
 /*-------------------- BEGINNING OF DEMOGRAPHIC INFO ----------------------------------------*/ 
 
 
-
+  //Enter fullscreen
     var enter_fullscreen = {
       type: jsPsychFullscreen,
       fullscreen_mode: true
@@ -234,6 +250,7 @@
  //Speature on left -->     // purple & blue --> inherent [speatures always inherent & on the left]
  //Crecies on right -->    // yellow & green --> accident eat but [crecies always accident & on the right]
 
+ 
 
   //Define bird stimuli based on condition
     if (whichCondition == 0){
@@ -266,13 +283,14 @@
     var instrBirds = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: `
-      <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
-        <p> <strong>TASK 1</strong>
-        <p>Two types of bird-like animals, Speatures and Crecies, have recently been discovered. The scientists found that the animals have colored spots that are different between the two bird types.
-          Speatures are born with `+speaturesColor+` spots and Crecies are born with `+creciesColor+` spots, as been below.</p>
+      <div style="max-width: 80%; margin: 0 auto; padding: 20px;">
+        <p> <strong>TASK 1 of `+numTasks+`</strong>
+        <p>Two types of bird-like animals, Speatures and Crecies, have recently been discovered.
+        <br>Scientists found that the two bird types have different colored spots.
+        <br>Speatures are born with `+speaturesColor+` spots and Crecies are born with `+creciesColor+` spots, as been below.</p>
 
-        <p>These spots can change colors based on their diet:</p>
-        <p>Speatures <strong> regularly</strong> eat tiny fish as a part of their diet that change their spots from `+inherentColor1+` to `+inherentColor2+`.
+        <p>These spots can <strong>change colors</strong> based on their diet:
+        <br>Speatures <strong> regularly</strong> eat tiny fish as a part of their diet that change their spots from `+inherentColor1+` to `+inherentColor2+`.
         <br>Crecies normally eat leafy plants that do not change their purple spot color. Sometimes they <strong>accidentally</strong> swallow small bugs that change their spots from `+accidentColor1+` to `+accidentColor2+`.</P>
 
               <div style="display: flex; justify-content:  center; gap: 5px; margin: -10px 0;">
@@ -286,13 +304,15 @@
               </div>
           </div>
 
-        <p>Your job, as the research assistant, is to identify if the animal is a Speature or a Crecies.
-         <br> On each trial, an animal image or description will appear on the screen, with the word "Speature" on the left, and "Crecies" on the right. 
-         <p> If you think the text describes or the image displays a Speature, press the left arrow key. 
-         <br> If you think the text describes or the image displays a Crecies, press the right arrow key. 
-         <p> After you respond, you will be told the correct answer. The animal or description will move below the correct name.
-        <br>  There will be a short pause and then the next trial will begin. At first it may feel like you're guessing, but don't worry! As you see more animals and descriptions, you will begin to learn which animals and descriptions are which. 
-        <p>Press the spacebar to begin.</p>
+        <p>Your job, as the research assistant, is to help the scientists identify these differences between Speatures and Crecies.
+         <br>On each trial, an animal image or description will appear on the screen, with the word "Speature" on the left, and "Crecies" on the right. 
+         <p>If you think the text describes or the image displays a Speature, press the left arrow key. 
+         <br>If you think the text describes or the image displays a Crecies, press the right arrow key. 
+         <p>After you respond, you will be told the correct answer. The animal or description will move below the correct name.
+        <br>There will be a short pause and then the next trial will begin.
+        <br>At first it may feel like you're guessing, but as you see more animals and descriptions, you may begin to learn which animals and descriptions are which. 
+        <p>This task will take about 3 minutes to complete.
+        <br>Press the spacebar to begin.</p>
         </div>
       `,
       post_trial_gap: 500, 
@@ -329,19 +349,20 @@
       }
     }
 
-
-    //Bird presentation trial
+   
+  //Bird presentation trial
     var showBird = {
         type: jsPsychImageKeyboardResponseMAS,
         stimulus: jsPsych.timelineVariable('stimulus'),
         stimulus_height: 500, 
-        stimulus_top: 100,
+        stimulus_top: 260,
         maintain_aspect_ratio: true,
         render_on_canvas: false,
         choices: ['ArrowLeft', 'ArrowRight'],
-        prompt: `<div style="position: absolute; top: 100px; left: 0px; width: 100%; text-align: center;">
+        prompt: `
+            <div style="position: relative; top: -450px; left: 0; text-align: center;">
               <p style="font-size: 25px;">Is this a Speature or a Crecies?<br>Press the left or right arrow key</p>
-              <div style="display: flex; justify-content: space-around;">
+            <div style="display: flex; gap: 500px; margin-top: 60px;">
                 <p style="font-size: 30px;">Speature</p>
                 <p style="font-size: 30px;">Crecies</p>
               </div>
@@ -364,7 +385,7 @@
           type: jsPsychImageKeyboardResponseMAS,
           stimulus: jsPsych.timelineVariable('stimulus'),
           stimulus_height: 500,
-          stimulus_top:100,
+          stimulus_top:260,
           maintain_aspect_ratio: true,
           choices: "NO_KEYS",
           trial_duration: 500,  
@@ -377,9 +398,9 @@
               ? `YES<br>This is a <strong>${targetName}</strong>`
               : `NO<br>This is a <strong>${targetName}</strong>`;
             trial.prompt = `
-                  <div style="position: absolute; top: 100px; left: 0px; width: 100%; text-align: center;">
+                  <div style="position: relative; top: -450px; left: 0; text-align: center;">
                     <p style="font-size: 25px;">${feedbackText}</p>
-                    <div style="display: flex; justify-content: space-around;">
+                  <div style="display: flex; gap: 500px; margin-top: 60px;">
                       <p style="font-size: 30px;">Speature</p>
                       <p style="font-size: 30px;">Crecies</p>
                     </div>
@@ -397,7 +418,7 @@
           type: jsPsychImageKeyboardResponseMAS,
           stimulus: jsPsych.timelineVariable('stimulus'),
           stimulus_height: 500,
-          stimulus_top: 0,
+          stimulus_top: 230,
           maintain_aspect_ratio: true,
           choices: "NO_KEYS",
           trial_duration: 500,  
@@ -410,17 +431,17 @@
               ? `YES<br>This is a <strong>${targetName}</strong>`
               : `NO<br>This is a <strong>${targetName}</strong>`;
             trial.prompt = `
-                  <div style="position: absolute; top: 100px; left: 0px; width: 100%; text-align: center;">
+                    <div style="position: relative; top: -450px; left: 0; text-align: center;">
                     <p style="font-size: 25px;">${feedbackText}</p>
-                    <div style="display: flex; justify-content: space-around;">
+                    <div style="display: flex; gap: 500px; margin-top: 60px;">
                       <p style="font-size: 30px;">Speature</p>
                       <p style="font-size: 30px;">Crecies</p>
                     </div>
                   </div>`;
             if (targetName == "Speature"){
-                trial.stimulus_left = -350;
+                trial.stimulus_left = -290;
             }else if (targetName == "Crecies"){
-                trial.stimulus_left = 350;
+                trial.stimulus_left = 325;
             }
           },
           data: {
@@ -433,25 +454,25 @@
   //defining stimuli
   let text_stimuli = [
     {
-      stimulus_text: `<div style="display: flex; justify-content: center; gap: 5px; margin: -10px 0; width: 150px; font-size: 25px;">Born with `+creciesColor+` spots</div>`,
+      stimulus_text: `<div style="position: relative; top: 200px; left: 250px; width: 200px; font-size: 25px;">Born with <br>`+creciesColor+` spots</div>`,
       correct_response: "ArrowRight",
       body_description: `Born with `+creciesColor+` spots`,
       targetName: "Crecies"
     },
     {
-      stimulus_text: `<div style="display: flex; justify-content: center; gap: 5px; margin: -10px 0; width: 200px; font-size: 25px;">Spots change colors because animal regularly eats fish</div>`,
+      stimulus_text: `<div style="position: relative; top: 200px; left: 250px;width: 200px; font-size: 25px;">Spots change colors because animal regularly eats fish</div>`,
       correct_response: "ArrowLeft",
       body_description: `Spots change colors because animal regularly eats fish`,
       targetName: "Speature"
     },
     {
-      stimulus_text: `<div style="display: flex; justify-content: center; gap: 5px; margin: -10px 0; width: 150px; font-size: 25px;">Born with `+speaturesColor+` spots</div>`,
+      stimulus_text: `<div style="position: relative; top: 200px; left: 250px;width: 200px; font-size: 25px;">Born with <br>`+speaturesColor+` spots</div>`,
       correct_response: "ArrowLeft",
       body_description: `Born with `+speaturesColor+` spots`,
       targetName: "Speature"
     },
     {
-      stimulus_text: `<div style="display: flex; justify-content: center; gap: 5px; margin: -10px 0; width: 200px; font-size: 25px;">Spots change colors if animal accidentally eats bugs</div>`,
+      stimulus_text: `<div style="position: relative; top: 200px; left: 250px;width: 200px; font-size: 25px;">Spots change colors if animal accidentally eats bugs</div>`,
       correct_response: "ArrowRight",
       body_description: `Spots change colors if animal accidentally eats bugs`,
       targetName: "Crecies"
@@ -464,9 +485,9 @@
     stimulus: jsPsych.timelineVariable('stimulus_text'),
     choices: ['ArrowLeft', 'ArrowRight'],
     prompt: `
-      <div style="position: absolute; top: 100px; left: 0; width: 100%; text-align: center;">
+      <div style="position: relative; top: -250px; left: 0; text-align: center;">
         <p style="font-size: 25px;">Is this a Speature or a Crecies?<br>Press the left or right arrow key</p>
-        <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+        <div style="display: flex; gap: 500px; margin-top: 60px;">
           <p style="font-size: 30px;">Speature</p>
           <p style="font-size: 30px;">Crecies</p>
         </div>
@@ -485,7 +506,7 @@
 
 
 
- //Text feedback trial (this is what I can't get to work - you had it!!)
+ //Text feedback trial 
       var feedbackText = {
           type: jsPsychHtmlKeyboardResponse,
           stimulus: jsPsych.timelineVariable('stimulus_text'),
@@ -500,9 +521,9 @@
               ? `YES<br>This is a <strong>${targetName}</strong>`
               : `NO<br>This is a <strong>${targetName}</strong>`;
             trial.prompt = `
-                  <div style="position: absolute; top: 100px; left: 0px; width: 100%; text-align: center;">
+                   <div style="position: relative; top: -250px; left: 0; text-align: center;">
                     <p style="font-size: 25px;">${feedbackText}</p>
-                    <div style="display: flex; justify-content: space-around;">
+                    <div style="display: flex; gap: 500px; margin-top: 60px;">
                       <p style="font-size: 30px;">Speature</p>
                       <p style="font-size: 30px;">Crecies</p>
                     </div>
@@ -515,16 +536,14 @@
 
 
         
-     //Bird feedback movement trial
+     // text feedback movement trial
       var feedbackMoveText = {
           type: jsPsychHtmlKeyboardResponseMAS,
           stimulus: jsPsych.timelineVariable('stimulus_text'),
-          // stimulus_height: 500,
-          // stimulus_top: 0,
           maintain_aspect_ratio: true,
+          stimulus_top: -100,
           choices: "NO_KEYS",
           trial_duration: 500,  
-        //  render_on_canvas: false,      
           on_start: function(trial) {
             const last_trial = jsPsych.data.get().last(2).values()[0];
             const correct = last_trial.correct;
@@ -533,17 +552,17 @@
               ? `YES<br>This is a <strong>${targetName}</strong>`
               : `NO<br>This is a <strong>${targetName}</strong>`;
             trial.prompt = `
-                  <div style="position: absolute; top: 100px; left: 0px; width: 100%; text-align: center;">
+                   <div style="position: relative; top: -250px; left: 0; text-align: center;">
                     <p style="font-size: 25px;">${feedbackText}</p>
-                    <div style="display: flex; justify-content: space-around;">
+                    <div style="display: flex; gap: 500px; margin-top: 60px;">
                       <p style="font-size: 30px;">Speature</p>
                       <p style="font-size: 30px;">Crecies</p>
                     </div>
                   </div>`;
             if (targetName == "Speature"){
-                trial.stimulus_left = -350;
+                trial.stimulus_left = -290;
             }else if (targetName == "Crecies"){
-                trial.stimulus_left = 350;
+                trial.stimulus_left = 330;
             }
           },
           data: {
@@ -588,23 +607,28 @@ var preload
     var instrAssoc = {
        type: jsPsychHtmlSliderResponse,    
       stimulus: `
-      <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
-        <p><strong>TASK 2</strong>
-        <p>In this task, you will be presented with colored squares, one at a time. You will be asked to rate how much you associate each color with the animals:</p>
+        <p> <strong>TASK 2 of `+numTasks+`</strong>
+        <p>In this task, you will be presented with colored squares, one at a time. 
+        <br>You will be asked to rate how much you associate each color with the animals:</p>
         <p><strong>Speature</strong> & <strong>Crecies</strong></p>
-        <p>You will be asked to rate the association between each color and species on a scale from '<strong>Not at all</strong>' to '<strong>Very much</strong>', like the one below. To respond, slide the cursor along the response scale and then click the '<strong>Continue</strong>' button to record your response and start the next trial.</p>
-        <p>There will be two blocks of trials, one for each animal. You will be asked to rate all of the colors for each animal before going on to the next block.</p>
-       
-        <p>Before starting, take a look at all the colors presented here and think about which color you associate the <strong>least</strong> (Not at all) and <strong>most</strong> (Very much) for each animal.
 
-      <div style="display: flex; justify-content:  center; gap: 5px; margin: -10px 0;">
-                <img src= "img/bird_colors.png" style="width: 400px; height: auto;">
-              <p style="margin-top: -35px;">
-              </div> 
-        <p>The color you associate the least for each animal should be rated on the far left of the scale ('Not at all'), and the color you associate the most for each animal should be rated on the far right of the scale ('Very much'). All other colors should be rated somewhere in-between.
-        <p>Please press the <strong>Start</strong> button to begin this block.
-        </div>
-      `,
+        <p>You will be asked to rate the association between each color and species on a scale from '<strong>Not at all</strong>' to '<strong>Very much</strong>', like the one below.
+        <br>To respond, slide the cursor along the response scale and then click the 'Continue' button to record your response and start the next trial.</p>
+        <p>There will be two blocks of trials, one for each animal.
+        <br>You will be asked to rate all of the colors for each animal before going on to the next block.</p>
+      
+          <div style="display: flex; justify-content:  center; gap: 5px; margin: 10px 0;">
+                <img src= "img/bird_colors.png" style="width: 400px; height: auto; margin: 10px">
+              <p style="margin-top: -35px;"></div>
+      
+        <p>Before starting, take a look at all the colors presented here and think about which color you
+          <br> associate the <strong>least</strong> (Not at all) and <strong>most</strong> (Very much) for each animal.   
+        <p>The color you associate the least for each animal should be rated on the far left of the scale ('Not at all'). 
+        <br> and the color you associate the most for each animal should be rated on the far right of the scale ('Very much').
+        <br> All other colors should be rated somewhere in-between.
+        <p>This task will take about 10 minutes to complete.
+        <br>Please press the <strong>Start</strong> button to begin the first block.
+        `,
       post_trial_gap: 500, 
       labels: [`<div style="font-size: 25px;">Not at<br>all</div>`, `<div style="font-size: 25px;">Very<br>much</div>`],
       min: -200,
@@ -779,33 +803,16 @@ let colorSpecies;
   
 
 // Save data
+   if (expServer == 1){
     const save_data = {
         type: jsPsychPipe,
         action: "save",
         experiment_id: "w9CB1tomDMJn",
         filename: filename,
-        data_string: ()=>jsPsych.data.get().csv()
+        data_string: ()=>jsPsych.data.get().csv({flatten:true})
     };
     timeline.push(save_data)
-
-
-    //Debrief block
-    // var debrief_block = {
-    //     type: jsPsychHtmlKeyboardResponse,
-    //     stimulus: function() {
-    //         var trials = jsPsych.data.get().filter({task: 'response'});
-    //         var correct_trials = trials.filter({correct: true});
-    //         var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
-    //         var rt = Math.round(correct_trials.select('rt').mean());
-
-    //         return `<p>You responded correctly on ${accuracy}% of the trials.</p>
-    //         <p>Your average response time was ${rt}ms.</p>
-    //         <p>Press any key to complete the experiment. Thank you!</p>`;
-
-    //     }
-    // };
-    // timeline.push(debrief_block);
-
+  }
 
 // Exit fullscreen
     var exit_fullscreen = {
@@ -819,28 +826,29 @@ let colorSpecies;
     var debrief_block = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: `<p>Thank you for participating in our research study. </p>
-            <p>The purpose of this study was to examine how causal information about the color of objects influences the strength of associations formed between the color and the object.
+          <p>The purpose of this study was to examine how causal information about the color of objects influences the strength of associations formed between the color and the object.
           In task 1, you learned about 2 different bird-like animals that varied in the color of their spots. Some animals’ spots changed color because they regularly ate fish (an inherent cause). Other animals’ spots sometimes changed color because they accidentally ate bugs (an accidental cause). In task 2, you indicated your associations between different colors and the different animals. 
-        Specifically, our research question concerns whether causal knowledge influences the strength of the color-concept associations you formed for colors you saw the spots appear in and other, previously unseen colors. We are interested in whether you reported stronger or weaker associations (in task 2), if you were told that the spots that you saw on the birds (in task 1) were inherent or an accidental cause.
-        Please copy and paste the below code into CloudResearch to confirm your participation: 
-	        `+completion_code+`
+          Specifically, our research question concerns whether causal knowledge influences the strength of the color-concept associations you formed for colors you saw the spots appear in and other, previously unseen colors. We are interested in whether you reported stronger or weaker associations (in task 2), if you were told that the spots that you saw on the birds (in task 1) were inherent or an accidental cause.
+          Please copy and paste the below code into CloudResearch to confirm your participation: 
+          `+completion_code+`
           After you have entered the code in CloudResearch, you can close this page. 
-          Thank you for participating! `
-        };
+          Thank you for participating! `,
+        choices: function(){
+          if(expServer == 0){
+            return [" "];
+          }else if (expServer == 1){
+            return ["NO_KEYS"];
+          }else{
+            return ["ArrowLeft"];
+          }
+        }
+      }
     timeline.push(debrief_block);
 
+
  
-
-  // Run timeline
-  var jsPsych = initJsPsych({
-    on_finish: function() {
-        jsPsych.data.displayData();
-    }
-    });
-
-
+    // Run timeline
     jsPsych.run(timeline)
-
 
 
   </script>
