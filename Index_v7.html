@@ -13,13 +13,13 @@
     <script src="jspsych/plugin-html-button-response.js"></script>
     <script src="jspsych/plugin-survey-text.js"></script>
     <script src="jspsych/plugin-fullscreen.js"></script>
-    <script src="https://unpkg.com/@jspsych-contrib/plugin-pipe"></script>
     <script src="jspsych/plugin-survey-multi-choice.js"></script>
     <script src="jspsych/plugin-survey-multi-select.js"></script>
+
+    <script src="https://unpkg.com/@jspsych-contrib/plugin-pipe"></script>
+   
     <script src="colorCalibration_srgb_InherentFeat.js"></script>
-
     <script src = "ishiharaPlates.js"></script>
-
     <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
 
   </head>
@@ -34,12 +34,12 @@
     //General experiment info to update
     var expType = 2 // 0 = SONA; in-lab version; 1 = sona ONLINE ; 2 = CloudResearch online version (relevant for consent & debriefing)
         console.log("consent:", expType)
-        console.log("Updated last: 7/8")
+        console.log("Updated last: 7/9")
 
   
     var expTime = 15; // How long experiment will take in minutes
     var experimenterName = "mschoenl@highpoint.edu"  //Update to your contact info. this is presented if an error arises for a participantd
-    var numConditions = 1; //Number of conditions. If more than 1 and on server, will counterbalance. 
+    var numConditions = 2; //Number of conditions. 
     var numTasks = 2;  //Number of experimental tasks (not counting demographics/consent)
 
     //CloudResearch completion code 
@@ -47,8 +47,7 @@
 
 
     // Set background color  
-    document.body.style.backgroundColor = "rgb(121, 121, 121)" 
-
+    document.body.style.backgroundColor = "rgb(121, 121, 121)"             
 
    
 
@@ -63,7 +62,16 @@
 
     //general overview/opening items
     var jsPsych = initJsPsych();
-    var timeline = [];
+
+          async function createExperiment(){
+                    const condition = await jsPsychPipe.getCondition("w9CB1tomDMJn");
+                    if(condition == 0) { timeline = timeline }
+                    if(condition == 1) { timeline = timeline }
+                    //jsPsych.run(timeline);
+                    var timeline = [];
+
+                  }
+          createExperiment();
 
 
     //give subjects a random ID
@@ -81,13 +89,15 @@
         }
     assigned_condition = getRandomIntInclusive(0,numConditions-1);
     var whichCondition = assigned_condition; 
-    console.log("whichCondition: ", whichCondition)
+    var whichCondition = condition; 
 
-    // var preload = {
-    //     type: jsPsychPreload,
-    //     images: ['img/blue.png', 'img/orange.png']
-    // };s
-    // timeline.push(preload);
+      console.log("whichCondition: ", whichCondition)
+
+  // Get Start time
+    var start_time = new Date();
+
+  //Record mturk/SONAID, condition, subjectID, and date info
+    jsPsych.data.addProperties({workerID: workerID,  subjectID: subject_id, condition: whichCondition, dateInfo: start_time}); //CHECK THAT THESE OUTPUT
 
 
     //Initialize colors
@@ -98,24 +108,53 @@
 
 
 
+/*----------------------------------Standard functions & variables ------------------------------------ */
+
+    //Fixation trial
+    var fixation = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: '<div style="font-size:60px;">+</div>',
+        choices: "NO_KEYS",
+        trial_duration: 500, 
+        data: {
+            task: 'fixation'
+        }
+    };
+
+
+     // var preload = {
+    //     type: jsPsychPreload,
+    //     images: ['img/blue.png', 'img/orange.png']
+    // };s
+    // timeline.push(preload);
+
+
 // ------------------------------------ START OF EXPERIMENT TRIALS ------------------------------------//
    
 
 // define welcome message trial 
     var welcome = {
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus: "Welcome to the experiment. <p> Press any key to begin."
+      type: jsPsychHtmlButtonResponse,
+      stimulus: '<strong>Welcome to our experiment!</strong>' +
+            '<p>Please make sure you are using a computer to complete this experiment (i.e. NOT a phone or tablet).'+
+            "<br>Please ensure your monitor's brightness is turned up."+
+            '<br>For best viewing, please sit approximately 1.5 feet to 2 feet from your computer screen.</p>'+
+            '<br>At the bottom of this screen, you will see a button that says "Begin Experiment".'+
+            '<br>Please only click that button when you are ready to complete the '+expTime+' minute experiment in one sitting.</p>'+
+            '<br> Once you click that button, it will not be possible to restart the experiment.',
+       choices: ['Begin Experiment'] 
     };
     timeline.push(welcome);
+
 
  
  // Consent form
     var consentSign = {
             type: jsPsychSurveyMultiSelect,
             questions: [
-                {prompt:` 
-                  <div style="max-width: 90%; margin: 0 auto; padding: 20px;">
-                  <div style="text-align:center;"><strong>HIGH POINT UNIVERSITY</strong></div>
+                {prompt: 
+                  `<div style="max-width: 900px; margin: 0 auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px;">
+                   <div style="text-align:center;"><strong>HIGH POINT UNIVERSITY</strong></div>
                   <p><div style="text-align:center;"><strong>Research Participant Consent Form</strong></div>
                   <br><br><strong>Title of the Study: </strong>Investigating how people perceive and interpret visual information
                  <p><strong>Principal Investigator:</strong> Dr. Melissa Schoenlein (mschoenl@highpoint.edu)
@@ -139,8 +178,8 @@
                   <br><br><strong>Your data will be used for:</strong> Your data may be used as part of publications about this research. Further, your data may be sent to researchers outside of High Point University so that other scientists can replicate the experiment findings. Any personal information that could identify you will be removed before the data is shared or used publications.
                   <br><br> By clicking the box below, you confirm that you have read this consent form, had an opportunity to ask any questions about your participation in this research and voluntarily consent to participate. You may print a copy of this form for your records.
                   <br><br>Please click the box below next to the text “I consent” to give your informed consent to participate. 
-                `,
-                options: [`<div style="max-width: 90%; margin: 0 auto; padding: 20px;"<strong>I consent</strong>`],
+                </div>`,
+                options: [`<strong>I consent</strong>`],
                 horizontal: false,
                 required: true,
                 name: 'Consent'},
@@ -152,7 +191,9 @@
 
 
 
-//-------------------- BEGINNING OF DEMOGRAPHIC INFO ----------------------------------------// 
+/*-------------------- BEGINNING OF DEMOGRAPHIC INFO ----------------------------------------*/ 
+
+
 
     var enter_fullscreen = {
       type: jsPsychFullscreen,
@@ -190,10 +231,47 @@
 
 
 
+
+
 /*----------------------------------Part 1: Bird Categorization------------------------------------ */
 
+//Randomize which condition participants are in 
+
+//CONDITION 0 [yellow = inherent]
+ //Speature on left -->     // yellow & green --> inherent eat fish [speatures always inherent & on the left]
+ //Crecies on right -->    // purple & blue --> accident eat bug [crecies always accident & on the right]
+
+//CONDITION 1 [purple = inherent]
+ //Speature on left -->     // purple & blue --> inherent [speatures always inherent & on the left]
+ //Crecies on right -->    // yellow & green --> accident eat but [crecies always accident & on the right]
 
 
+  //Define bird stimuli based on condition
+    if (whichCondition == 0){
+      var speaturesColor = "yellow"
+      var creciesColor = "purple"
+      var yellowSpecies = "Speature"
+      var purpleSpecies = "Crecies"
+      var inherentColor1 = speaturesColor
+      var inherentColor2 = "green"
+      var accidentColor1 = creciesColor
+      var accidentColor2 = "blue"
+
+    }else if (whichCondition == 1){
+      var speaturesColor = "purple"
+      var creciesColor = "yellow"
+      var yellowSpecies = "Crecies"
+      var purpleSpecies = "Speature"
+      var inherentColor1 = speaturesColor
+      var inherentColor2 = "blue"
+      var accidentColor1 = creciesColor
+      var accidentColor2 = "green"
+    }
+
+    console.log("speatures", speaturesColor)
+    console.log("crecies", creciesColor)
+
+   
    
     // Define instructions trial 
     var instrBirds = {
@@ -202,19 +280,19 @@
       <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
         <p> <strong>TASK 1</strong>
         <p>Two types of bird-like animals, Speatures and Crecies, have recently been discovered. The scientists found that the animals have colored spots that are different between the two bird types.
-          Speatures are born with yellow spots and Crecies are born with purple spots, as been below.</p>
+          Speatures are born with `+speaturesColor+` spots and Crecies are born with `+creciesColor+` spots, as been below.</p>
 
         <p>These spots can change colors based on their diet:</p>
-        <p>Speatures <strong>regularly</strong> eat tiny fish as a part of their diet that change their spots from yellow to green.
-        <br>Crecies normally eat leafy plants that do not change their purple spot color. Sometimes they <strong>accidentally</strong> swallow small bugs that change their spots from purple to blue.</P>
+        <p>Speatures <strong> regularly</strong> eat tiny fish as a part of their diet that change their spots from `+inherentColor1+` to `+inherentColor2+`.
+        <br>Crecies normally eat leafy plants that do not change their purple spot color. Sometimes they <strong>accidentally</strong> swallow small bugs that change their spots from `+accidentColor1+` to `+accidentColor2+`.</P>
 
               <div style="display: flex; justify-content:  center; gap: 5px; margin: -10px 0;">
               <div style="text-align: center;">
-                <img src="img/0_yellow.png" style="width: 300px; height: auto;">
+                <img src="img/0_`+speaturesColor+`.png" style="width: 300px; height: auto;">
                 <p style="margin-top: -35px;"><strong>Speature</strong><br>Press the Left Arrow key</p>
               </div>
               <div style="text-align: center;">
-                <img src="img/0_purple.png" style="width: 300px; height: auto;">
+                <img src="img/0_`+creciesColor+`.png" style="width: 300px; height: auto;">
                <p style="margin-top: -35px;"><strong>Crecies</strong><br>Press the Right Arrow key</p>
               </div>
           </div>
@@ -229,54 +307,38 @@
         </div>
       `,
       post_trial_gap: 500, 
-      choices: [" "]
+      choices: [" "],
+      data: {
+            task: 'instructions',
+      }
     };
     timeline.push(instrBirds);
 
    
 
  //Create procedure
-
- //Speature on left -->     // yellow & green
- //Crecies on right -->    // purple & blue
-
-
-
-    //Define stimuli
-    const colors = ["yellow", "green", "purple","blue"];
-    const numbers = [0, 1, 2, 3, 4];
-
-    let bird_stimuli = [];
+  const colors = ["yellow", "green", "purple","blue"];
+  const numbers = [0, 1, 2, 3, 4];
+  let bird_stimuli = [];
 
     for (let num of numbers) {
       for (let color of colors) {
         //yellow green = left; pruple blue = right
-        let correct_response = (color === "yellow" || color === "green") 
-          ? 'ArrowLeft' 
-          : 'ArrowRight';
-        let targetName = (color === "yellow" || color === "green") 
-          ? 'Speature' 
-          : 'Crecies';
+         let correct_response = (color === inherentColor1 || color === inherentColor2) 
+            ? "ArrowLeft" 
+            : "ArrowRight";
+          let targetName = (color === inherentColor1 || color === inherentColor2) 
+            ? "Speature" 
+            : "Crecies";
         bird_stimuli.push({
           stimulus: `img/${num}_${color}.png`,
           correct_response: correct_response,
-          targetName: targetName
+          targetName: targetName,
+          body_number: num,
+          body_color: color,
         });
       }
     }
-
-    console.log(bird_stimuli)
-
-    //Fixation trial
-    var fixation = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: '<div style="font-size:60px;">+</div>',
-        choices: "NO_KEYS",
-        trial_duration: 500, 
-        data: {
-            task: 'fixation'
-        }
-    };
 
 
     //Bird presentation trial
@@ -300,11 +362,12 @@
        },
         data: {
             task: 'bird sorting',
+            body_number: jsPsych.timelineVariable('body_number'),
+            body_color: jsPsych.timelineVariable('body_color'),
             correct_response: jsPsych.timelineVariable('correct_response'),
             targetName: jsPsych.timelineVariable('targetName')  
         }
     }
-
 
 
      //Bird feedback trial
@@ -381,23 +444,27 @@
   //defining stimuli
   let text_stimuli = [
     {
-      stimulus_text: `<div style="display: flex; justify-content: center; gap: 5px; margin: -10px 0; width: 150px; font-size: 25px;">This animal is born with purple spots</div>`,
+      stimulus_text: `<div style="display: flex; justify-content: center; gap: 5px; margin: -10px 0; width: 150px; font-size: 25px;">Born with `+creciesColor+` spots</div>`,
       correct_response: "ArrowRight",
+      body_description: `Born with `+creciesColor+` spots`,
       targetName: "Crecies"
     },
     {
-      stimulus_text: `<div style="display: flex; justify-content: center; gap: 5px; margin: -10px 0; width: 150px; font-size: 25px;">This animal changes colors because it regularly eats fish</div>`,
+      stimulus_text: `<div style="display: flex; justify-content: center; gap: 5px; margin: -10px 0; width: 200px; font-size: 25px;">Spots change colors because animal regularly eats fish</div>`,
       correct_response: "ArrowLeft",
+      body_description: `Spots change colors because animal regularly eats fish`,
       targetName: "Speature"
     },
     {
-      stimulus_text: `<div style="display: flex; justify-content: center; gap: 5px; margin: -10px 0; width: 150px; font-size: 25px;">This animal is born with yellow spots</div>`,
+      stimulus_text: `<div style="display: flex; justify-content: center; gap: 5px; margin: -10px 0; width: 150px; font-size: 25px;">Born with `+speaturesColor+` spots</div>`,
       correct_response: "ArrowLeft",
+      body_description: `Born with `+speaturesColor+` spots`,
       targetName: "Speature"
     },
     {
-      stimulus_text: `<div style="display: flex; justify-content: center; gap: 5px; margin: -10px 0; width: 150px; font-size: 25px;">This animal changes colors if it accidentally eats bugs</div>`,
+      stimulus_text: `<div style="display: flex; justify-content: center; gap: 5px; margin: -10px 0; width: 200px; font-size: 25px;">Spots change colors if animal accidentally eats bugs</div>`,
       correct_response: "ArrowRight",
+      body_description: `Spots change colors if animal accidentally eats bugs`,
       targetName: "Crecies"
     }
   ];
@@ -419,6 +486,7 @@
     data: {
       task: 'text sorting',
       correct_response: jsPsych.timelineVariable('correct_response'),
+      body_description: jsPsych.timelineVariable('body_description'),
       targetName: jsPsych.timelineVariable('targetName')
     },
     on_finish: function(data) {
@@ -540,11 +608,11 @@ var preload
        
         <p>Before starting, take a look at all the colors presented here and think about which color you associate the <strong>least</strong> (Not at all) and <strong>most</strong> (Very much) for each animal.
 
-     <div style="display: flex; justify-content:  center; gap: 5px; margin: -10px 0;">
+      <div style="display: flex; justify-content:  center; gap: 5px; margin: -10px 0;">
                 <img src= "img/bird_colors.png" style="width: 400px; height: auto;">
               <p style="margin-top: -35px;">
               </div> 
-        <p>The color you associate the least for each animal should be rated on the far left of the scale, and the color you associate the most for each animal should be rated on the far right of the scale. All other colors should be rated somewhere in-between.
+        <p>The color you associate the least for each animal should be rated on the far left of the scale ('Not at all'), and the color you associate the most for each animal should be rated on the far right of the scale ('Very much'). All other colors should be rated somewhere in-between.
         <p>Please press the <strong>Start</strong> button to begin this block.
         </div>
       `,
@@ -557,51 +625,79 @@ var preload
       step: 1,
       require_movement: false, 
       response_ends_trial: true,
-      button_label: ["Start"]
+      button_label: ["Start"],
+      data: {
+        task: "instructions"
+      }
     };
     timeline.push(instrAssoc);
 
-
+// Assign color category
 let speciesNames= [`Speatures`,`Crecies`];
 let colorNumberIndex= [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+let colorSeq;
+let colorSpecies;
+  
 
-
-
-    //speatures set
+  //speatures set
   let rating_stimuli_Speatures= [];
   for(let colorNumber of colorNumberIndex){
-    for (let species of speciesNames){
-      let colorSpeciesMatch = (((colorNumber > 0) && colorNumber < 10) || colorNumber > 9 || colorNumber === 0)
-      ? `SpeaturesColors`
-      : `CreciesColor`
-      //? `BodyColor`;
-      rating_stimuli_Speatures.push({stimulus: `<div style="position:relative; top: -100px; font-size: 30px;">
+      if (colorNumber=== 0) {
+      colorSeq = "bodyColor";
+      colorSpecies = "both"
+    } else if (colorNumber >= 1 && colorNumber<= 9) {
+      colorSeq = "yellows";
+      colorSpecies = yellowSpecies
+    } else if (colorNumber >= 10 && colorNumber <= 18) {
+      colorSeq = "purples";
+      colorSpecies = purpleSpecies
+    } else if (colorNumber >= 19 && colorNumber <= 20) {
+      colorSeq = "achromatic";
+      colorSpecies = "neither"
+    } else {
+      colorSeq = "unknown"; // fallback in case of weird index
+      colorSpecies = "unknown"
+    }
+       rating_stimuli_Speatures.push({stimulus: `<div style="position:relative; top: -100px; font-size: 30px;">
               How much do you associate this color with
-              <p><strong>Speatures</strong>?</p>
-            </div>
+              <p><strong>Speatures</strong>?</p></div>
             <div style="width:100px;height:100px; position: relative; left: 250px; top: -50px; background-color:rgb(`+promptedColorR1[colorNumber]+`,`+promptedColorG1[colorNumber]+`,`+promptedColorB1[colorNumber]+`);"></div>`,
-            colorSpeciesMatch: colorSpeciesMatch
+            colorSeq: colorSeq,
+            colorNumber: colorNumber,
+            species: "Speature",
+            colorSpecies: colorSpecies
       })
     }
-  }
 
   //Crecies set
-    let rating_stimuli_Crecies= [];
+  let rating_stimuli_Crecies= [];
   for(let colorNumber of colorNumberIndex){
-    for (let species of speciesNames){
-      let colorSpeciesMatch = (((colorNumber > 0) && colorNumber < 10) || colorNumber > 9 || colorNumber === 0)
-      ? `SpeaturesColors`
-      : `CreciesColor`
-      //? `BodyColor`;
-      rating_stimuli_Crecies.push({stimulus: `<div style="position:relative; top: -100px; font-size: 30px;">
+      if (colorNumber=== 0) {
+          colorSeq = "bodyColor";
+          colorSpecies = "both"
+        } else if (colorNumber >= 1 && colorNumber<= 9) {
+          colorSeq = "yellows";
+          colorSpecies = yellowSpecies
+        } else if (colorNumber >= 10 && colorNumber <= 18) {
+          colorSeq = "purples";
+          colorSpecies = purpleSpecies
+        } else if (colorNumber >= 19 && colorNumber <= 20) {
+          colorSeq = "achromatic";
+          colorSpecies = "neither"
+        } else {
+          colorSeq = "unknown"; // fallback in case of weird index
+          colorSpecies = "unknown"
+       }
+    rating_stimuli_Crecies.push({stimulus: `<div style="position:relative; top: -100px; font-size: 30px;">
               How much do you associate this color with
-              <p><strong>Crecies</strong>?</p>
-            </div>
+              <p><strong>Crecies</strong>?</p></div>
             <div style="width:100px;height:100px; position: relative; left: 250px; top: -50px; background-color:rgb(`+promptedColorR1[colorNumber]+`,`+promptedColorG1[colorNumber]+`,`+promptedColorB1[colorNumber]+`);"></div>`,
-            colorSpeciesMatch: colorSpeciesMatch
-      })
+            colorSeq: colorSeq,
+            colorNumber: colorNumber,
+            species:"Crecies",
+            colorSpecies: colorSpecies        
+          })
     }
-  }
 
   //Association rating trial
     var squareRate =  {
@@ -614,20 +710,15 @@ let colorNumberIndex= [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
       slider_start: 0,
       step: 1,
       require_movement: true, 
-      response_ends_trial: true
+      response_ends_trial: true,
+      data: {
+        task: "rating trial",
+        colorSeq: jsPsych.timelineVariable('colorSeq'),
+        colorNumber: jsPsych.timelineVariable('colorNumber'),
+        targetName: jsPsych.timelineVariable('species'),
+        colorSpecies: jsPsych.timelineVariable('colorSpecies')
+      }
     }
-
-
-    //Fixation trial
-    var fixation = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: '<div style="font-size:60px;">+</div>',
-        choices: "NO_KEYS",
-        trial_duration: 500, 
-        data: {
-            task: 'fixation'
-        }
-    };
 
     //Block Break
     var block_break_speature = {
@@ -640,7 +731,7 @@ let colorNumberIndex= [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
         }
     };
 
-       //Block Break
+    //Block Break
     var block_break_crecies = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: `<div style="font-size:25px;">In this block, you will be asked to rate your association between a given color and <p><strong>Crecies</strong>
@@ -652,8 +743,6 @@ let colorNumberIndex= [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
     };
 
 
-
-
     //Speatures block
     var speatures_trials = {
         timeline: [fixation, squareRate],
@@ -661,8 +750,7 @@ let colorNumberIndex= [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
         repetitions: 2,
         randomize_order: true
     }
-
-       var speatures_procedure = {
+    var speatures_procedure = {
         timeline: [block_break_speature, speatures_trials],
     }
     
@@ -670,23 +758,22 @@ let colorNumberIndex= [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
     var crecies_trials = {
         timeline: [fixation, squareRate],
         timeline_variables: rating_stimuli_Crecies,
-        randomize_order: true,
-        repetitions: 2
-    }
+        repetitions: 2,
+        randomize_order: true
 
-       var crecies_procedure = {
+    }
+    var crecies_procedure = {
         timeline: [block_break_crecies, crecies_trials],
     }
 
 
-     //Rating procedure all 
+    //Rating procedure all 
     var rating_procedure = {
         timeline: jsPsych.randomization.shuffle([speatures_procedure, crecies_procedure]),
     }
     timeline.push(rating_procedure);
 
 
-console.log(rating_procedure)
 
 
 /* ---------------------------------- End of main experiment ---------------------------------------- */
@@ -696,6 +783,8 @@ console.log(rating_procedure)
 
 // //Function for ishihara plates (online only)
  ishiharaPlates()
+
+
 
 /* --------------------------------------- End Color vision check ------------------------ */
   
