@@ -62,18 +62,9 @@
 
     //general overview/opening items
     var jsPsych = initJsPsych();
+    var timeline = [];
 
-          async function createExperiment(){
-                    const condition = await jsPsychPipe.getCondition("w9CB1tomDMJn");
-                    if(condition == 0) { timeline = timeline }
-                    if(condition == 1) { timeline = timeline }
-                    //jsPsych.run(timeline);
-                    var timeline = [];
-
-                  }
-          createExperiment();
-
-
+      
     //give subjects a random ID
     const subject_id = jsPsych.randomization.randomID(10);
     const filename = `${subject_id}.csv`;
@@ -89,8 +80,6 @@
         }
     assigned_condition = getRandomIntInclusive(0,numConditions-1);
     var whichCondition = assigned_condition; 
-    var whichCondition = condition; 
-
       console.log("whichCondition: ", whichCondition)
 
   // Get Start time
