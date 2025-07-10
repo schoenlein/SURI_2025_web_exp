@@ -287,7 +287,7 @@
         <p> <strong>TASK 1 of `+numTasks+`</strong>
         <p>Two types of bird-like animals, Speatures and Crecies, have recently been discovered.
         <br>Scientists found that the two bird types have different colored spots.
-        <br>Speatures are born with `+speaturesColor+` spots and Crecies are born with `+creciesColor+` spots, as been below.</p>
+        <br>Speatures are born with `+speaturesColor+` spots and Crecies are born with `+creciesColor+` spots, as seen below.</p>
 
         <p>These spots can <strong>change colors</strong> based on their diet:
         <br>Speatures <strong> regularly</strong> eat tiny fish as a part of their diet that change their spots from `+inherentColor1+` to `+inherentColor2+`.
@@ -825,14 +825,16 @@ let colorSpecies;
         //Debrief block
     var debrief_block = {
         type: jsPsychHtmlKeyboardResponse,
-        stimulus: `<p>Thank you for participating in our research study. </p>
+       stimulus: 
+       ` <div style="max-width: 80%; margin: 0 auto; padding: 20px;">
+        <p><strong>Thank you for participating in our research study.</strong></p>
           <p>The purpose of this study was to examine how causal information about the color of objects influences the strength of associations formed between the color and the object.
-          In task 1, you learned about 2 different bird-like animals that varied in the color of their spots. Some animals’ spots changed color because they regularly ate fish (an inherent cause). Other animals’ spots sometimes changed color because they accidentally ate bugs (an accidental cause). In task 2, you indicated your associations between different colors and the different animals. 
-          Specifically, our research question concerns whether causal knowledge influences the strength of the color-concept associations you formed for colors you saw the spots appear in and other, previously unseen colors. We are interested in whether you reported stronger or weaker associations (in task 2), if you were told that the spots that you saw on the birds (in task 1) were inherent or an accidental cause.
-          Please copy and paste the below code into CloudResearch to confirm your participation: 
-          `+completion_code+`
-          After you have entered the code in CloudResearch, you can close this page. 
-          Thank you for participating! `,
+          <p>In task 1, you learned about 2 different bird-like animals that varied in the color of their spots. Some animals’ spots changed color because they regularly ate fish (an inherent cause). Other animals’ spots sometimes changed color because they accidentally ate bugs (an accidental cause). In task 2, you indicated your associations between different colors and the different animals. 
+          <p>Specifically, our research question concerns whether causal knowledge influences the strength of the color-concept associations you formed for colors you saw the spots appear in and other, previously unseen colors. We are interested in whether you reported stronger or weaker associations (in task 2), if you were told that the spots that you saw on the birds (in task 1) were inherent or an accidental cause.
+         <p>Please copy and paste the below code into CloudResearch to confirm your participation: 
+          <p><strong>`+completion_code+`</strong>
+          <p>After you have entered the code in CloudResearch, you can close this page. 
+          <p>Thank you for participating! `,
         choices: function(){
           if(expServer == 0){
             return [" "];
