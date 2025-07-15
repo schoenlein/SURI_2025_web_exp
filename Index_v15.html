@@ -32,7 +32,7 @@
 // ---------- UPDATE THESE AS NEEDED------------------//
 
     //General experiment info to update
-    console.log("Updated last: 7/14-v2")
+    console.log("Updated last: 7/14-v3")
 
     var expServer = 1 // 0 = testing mode; 1 = on server 
         console.log("serverMode", expServer)
@@ -47,7 +47,7 @@
     var numTasks = 3;  //Number of experimental tasks (add 1 to include Color vision test)
 
     //CloudResearch completion code 
-    var completion_code = "CA51B15F5A";  //Code copied from mTurk Cloud Research Fixed completion code
+    var completion_code = "44CB073B0D";  //Code copied from mTurk Cloud Research Fixed completion code
 
 
     // Set background color  
@@ -873,12 +873,12 @@ if (whichCondition == 0){
 
 // Save data
    if (expServer == 1){
-    const save_data = {
-                type: jsPsychPipe,
-                action: "save",
-                experiment_id: "nM8hJsTaxCyj",
-                filename: filename,
-                data_string: ()=>jsPsych.data.get().csv()
+      const save_data = {
+      type: jsPsychPipe,
+      action: "save",
+      experiment_id: "jhTrn6q0Khhn",
+      filename: filename,
+      data_string: ()=>jsPsych.data.get().csv()
     };
     timeline.push(save_data)
   }
