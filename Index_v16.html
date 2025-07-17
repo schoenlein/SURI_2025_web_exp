@@ -32,7 +32,7 @@
 // ---------- UPDATE THESE AS NEEDED------------------//
 
     //General experiment info to update
-    console.log("Updated last: 7/14-v3")
+    console.log("Updated last: 7/17-v1")
 
     var expServer = 1 // 0 = testing mode; 1 = on server 
         console.log("serverMode", expServer)
@@ -43,11 +43,11 @@
   
     var expTime = 15; // How long experiment will take in minutes
     var experimenterName = "mschoenl@highpoint.edu"  //Update to your contact info. this is presented if an error arises for a participantd
-    var numConditions = 2; //Number of conditions. 
+    var numConditions = 1; //Number of conditions. 
     var numTasks = 3;  //Number of experimental tasks (add 1 to include Color vision test)
 
     //CloudResearch completion code 
-    var completion_code = "44CB073B0D";  //Code copied from mTurk Cloud Research Fixed completion code
+    var completion_code = "BB0C92056D";  //Code copied from mTurk Cloud Research Fixed completion code
 
 
     // Set background color  
@@ -96,7 +96,7 @@
             return  Math.floor(Math.random() * (max - min + 1));
         }
     assigned_condition = getRandomIntInclusive(0,numConditions-1);
-    var whichCondition = assigned_condition; 
+    var whichCondition = 0 ; //assigned_condition; 
       console.log("whichCondition: ", whichCondition)
 
     // Get Start time
