@@ -104,7 +104,7 @@ var jsPsychHtmlKeyboardResponseMAS = (function (jspsych) {
       this.info = info;
     }
     trial(display_element, trial) {
-      var new_html = '<div id="jspsych-html-keyboard-response-stimulus" style = "position:relative; left:'+trial.stimulus_left+'px; top: '+trial.stimulus_top+'px;">' + trial.stimulus + "</div>";
+      var new_html = '<div id="jspsych-html-keyboard-response-stimulus" style = "position:relative; left:'+trial.stimulus_left+'px;">' + trial.stimulus + "</div>";
       if (trial.prompt !== null) {
         new_html += trial.prompt;
       }
