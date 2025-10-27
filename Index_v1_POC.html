@@ -568,7 +568,15 @@
           },
         };
         
-
+   var text_test = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: '<strong>Great job!</strong>' +
+            '<p> Now you will see additional trials containing the same descriptions of the birds, but this time you will not recieve feedback after you make your selection. '+
+            "<br>Please try to be as accurate as possible"+
+            '<br>Please click the start button when you are ready to begin.</p>',
+       choices: ['Start'] 
+    };
+  
 
 
   //Block for bird trials
@@ -587,10 +595,18 @@
     repetitions: 1 
   };
 
+   //block for text trials
+  var text_block_nf = {
+    timeline: [fixation, showText],
+    timeline_variables: text_stimuli,
+    randomize_order: true,
+    repetitions: 2 
+  };
+
   //alternate between text and bird blocks of trials, which results in repetitions of each. 
   //currenlty 3 repetitions of each text blcok & 2 repetitions of each bird
   var block_sequence = {
-    timeline: [text_block, bird_block, text_block, bird_block, text_block, text_block],
+    timeline: [text_block, bird_block, text_block, bird_block, text_block,text_test,text_block_nf],
   };
   timeline.push(block_sequence)
 
