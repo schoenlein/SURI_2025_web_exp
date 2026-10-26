@@ -31,7 +31,7 @@
 // ---------- UPDATE THESE AS NEEDED------------------//
 
     //General experiment info to update
-    console.log("Updated last: 10/26-v1")
+    console.log("Updated last: 10/26-v2")
 
     var expServer = 1 // 0 = testing mode; 1 = on server 
         console.log("serverMode", expServer)
@@ -555,7 +555,7 @@ if (expType == 0){
     const totalTrials = 15;
     
     var trial_names_S = shuffle(trial_names);
-    console.log("length", trial_names_S.length)
+   // console.log("length", trial_names_S.length)
 
     var questiontext = []; 
     const videoSet= [...Array(15).keys()]; // 0–24
@@ -564,8 +564,8 @@ if (expType == 0){
     for (let video of videoSet) {
 
         stimulus1[video] = trial_names_S[video]
-        console.log(video)
-        console.log("stimulus1[video]", stimulus1[video])
+       // console.log(video)
+        //console.log("stimulus1[video]", stimulus1[video])
 
         //define the question, left/right lables and correct response for each video
         if (stimulus1[video] == "S1Bl_N1Gr_EChange_S2Bl_N2Gr_EChange") {
@@ -701,7 +701,6 @@ if (expType == 0){
         });
     }
 
-    console.log("correctLabel", correctLabel)
 
     //video presentation trial
     var birdtest = {
