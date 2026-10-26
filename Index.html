@@ -31,7 +31,7 @@
 // ---------- UPDATE THESE AS NEEDED------------------//
 
     //General experiment info to update
-    console.log("Updated last: 10/26-v2")
+    console.log("Updated last: 10/26-v3")
 
     var expServer = 1 // 0 = testing mode; 1 = on server 
         console.log("serverMode", expServer)
@@ -710,6 +710,9 @@ if (expType == 0){
       width: 1020,
       trial_ends_after_video: true,
      // response_ends_trial: false,  
+      data: {
+        task: 'show video',
+      }
     }
     
     
@@ -736,6 +739,10 @@ if (expType == 0){
       choices: ['ArrowRight', 'ArrowLeft'],
       data: {
         task: 'response',
+        stimulus: jsPsych.timelineVariable('stimulus'),
+        question: jsPsych.evaluateTimelineVariable('questiontext'),
+        leftLabel: jsPsych.evaluateTimelineVariable('leftLabel'),
+        rightLabel: jsPsych.evaluateTimelineVariable('rightLabel'),
         correct_response: jsPsych.timelineVariable('correct_response')
       },
       on_finish: function(data) {
