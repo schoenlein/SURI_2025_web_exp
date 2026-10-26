@@ -49,7 +49,7 @@
 
 
     // Set background color  
-    document.body.style.backgroundColor = "rgb(121, 121, 121)"             
+    document.body.style.backgroundColor = "rgb(120, 120, 120)"             
 
 
 
@@ -326,14 +326,14 @@ if (expType == 0){
         <br> Here are examples of these animals: 
              
         <div style="display: flex; justify-content: space-between;
-             width: 330px; margin: 30px auto 0; position: relative; top: -30px; ">
+             width: 370px; margin: 30px auto 0; position: relative; top: -30px; ">
         <p style="font-size: 20px;"><strong>Speature</strong><br>Left arrow key</p>
         <p style="font-size: 20px;"><strong>Nerk</strong><br>Right arrow key</p>
                 </div>
 
           <div style="justify-content: space-between;
             width: 500px;height: 275px;  margin: 0px auto 0;">
-             <img src="img/Gray_both.png" style="position: relative; left: 0px; width:450px; height: auto; top: -115px">
+             <img src="img/Gray_both.png" style="position: relative; left: 0px; width:450px; height: auto; top: -130px">
           </div>
 
           <div style="position: relative; top:-50px;"
@@ -360,8 +360,8 @@ if (expType == 0){
   //Create procedure
   const numbers = [0, 1];
  var gray_stimuli = [
-  {stimulus: "img/Gray_Speature.png", correct_response:"ArrowLeft", target_name: "Speature", stimulus_height: 350, stimulus_top: 100},
-  {stimulus: "img/Gray_Nerk.png", correct_response: "ArrowRight", target_name: "Nerk", stimulus_height: 600, stimulus_top: 300}];
+  {stimulus: "img/Gray_Speature.png", correct_response:"ArrowLeft", target_name: "Speature", stimulus_height: 500, stimulus_top: 175},
+  {stimulus: "img/Gray_Nerk.png", correct_response: "ArrowRight", target_name: "Nerk", stimulus_height: 500, stimulus_top: 175}];
 
  
    var gray_show = {
@@ -373,10 +373,10 @@ if (expType == 0){
       stimulus_top: jsPsych.timelineVariable('stimulus_top'),
       maintain_aspect_ratio: true,
       prompt: `
-            <div style="position: relative; top: -350px; left: 0; text-align: center;">
+            <div style="position: relative; top: -450px; left: 0; text-align: center;">
               <p style="font-size: 25px;">Is this a Speature or a Nerk?</p>
-                <p style= "font-size: 20px;"><br>Press the left or right arrow key</p>
-            <div style="display: flex; gap: 450px; margin-top: 60px;">
+                <p style= "font-size: 20px;">Press the left or right arrow key</p>
+            <div style="display: flex; gap: 450px; margin-top: 0px;">
                 <p style="font-size: 30px;">Speature</p>
                 <p style="font-size: 30px;">Nerk</p>
               </div>
@@ -408,13 +408,13 @@ if (expType == 0){
             const correct = last_trial.correct;
             const targetName = last_trial.targetName; // 
             let feedbackText = correct
-              ? `YES<br>This is a <strong>${targetName}</strong>`
-              : `NO<br>This is a <strong>${targetName}</strong>`;
+              ? `YES, this is a <strong>${targetName}</strong>`
+              : `NO, this is a <strong>${targetName}</strong>`;
             trial.prompt = `
-                  <div style="position: relative; top: -350px; left: 0; text-align: center;">
+                  <div style="position: relative; top: -450px; left: 0; text-align: center;">
                   <p style="font-size: 25px;">Is this a Speature or a Nerk?</p>
                     <p style="font-size: 20px;">${feedbackText}</p>
-                  <div style="display: flex; gap: 450px; margin-top: 60px;">
+                  <div style="display: flex; gap: 450px; margin-top: 0px;">
                       <p style="font-size: 30px;">Speature</p>
                       <p style="font-size: 30px;">Nerk</p>
                     </div>
@@ -442,21 +442,21 @@ if (expType == 0){
             const correct = last_trial.correct;
             const targetName = last_trial.targetName;
             let feedbackText = correct
-              ? `YES<br>This is a <strong>${targetName}</strong>`
-              : `NO<br>This is a <strong>${targetName}</strong>`;
+              ? `YES, this is a <strong>${targetName}</strong>`
+              : `NO, this is a <strong>${targetName}</strong>`;
             trial.prompt = `
-                    <div style="position: relative; top: -350px; left: 0; text-align: center;">
+                    <div style="position: relative; top: -450px; left: 0; text-align: center;">
                       <p style="font-size: 25px;">Is this a Speature or a Nerk?</p>
                     <p style="font-size: 20px;">${feedbackText}</p>
-                    <div style="display: flex; gap: 450px; margin-top: 60px;">
+                    <div style="display: flex; gap: 450px; margin-top: 0px;">
                       <p style="font-size: 30px;">Speature</p>
                       <p style="font-size: 30px;">Nerk</p>
                     </div>
                   </div>`;
             if (targetName == "Speature"){
-                trial.stimulus_left = -290;
+                trial.stimulus_left = -270;
             }else if (targetName == "Nerk"){
-                trial.stimulus_left = 325;
+                trial.stimulus_left = 270;
             }
           },
           data: {
