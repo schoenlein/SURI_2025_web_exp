@@ -31,7 +31,7 @@
 // ---------- UPDATE THESE AS NEEDED------------------//
 
     //General experiment info to update
-    console.log("Updated last: 10/27-v1")
+    console.log("Updated last: 10/27-v2")
 
     var expServer = 1 // 0 = testing mode; 1 = on server 
         console.log("serverMode", expServer)
@@ -719,7 +719,7 @@ if (expType == 0){
 
     var trialQ ={
       type: jsPsychHtmlKeyboardResponse,
-     // stimulus: "",
+      stimulus: "",
       prompt: () => {
         let question = jsPsych.evaluateTimelineVariable('questiontext');
         let left = jsPsych.evaluateTimelineVariable('leftLabel');
